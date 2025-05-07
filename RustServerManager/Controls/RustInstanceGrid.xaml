@@ -1,0 +1,110 @@
+﻿<UserControl x:Class="RustServerManager.Controls.RustInstanceGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:local="clr-namespace:RustServerManager.Controls"
+             xmlns:conv="clr-namespace:RustServerManager.Converters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:viewmodels="clr-namespace:RustServerManager.ViewModels" 
+             xmlns:controls="clr-namespace:RustServerManager.Controls"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <conv:BoolToBrushConverterProcess 
+            x:Key="BoolToBrushConverterProcess"
+            TrueBrush="LimeGreen"
+            FalseBrush="Crimson"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="400" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" >
+            <GroupBox Header="Rust Instances">
+                <DockPanel Margin="16">
+                    <!-- Toolbar -->
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0 0 0 12" HorizontalAlignment="Center">
+                        <Button Command="{Binding NewCommand}" Margin="4" Style="{StaticResource MaterialDesignFlatButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Plus" Margin="0 4 4 0"/>
+                                <TextBlock Text="New" />
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding StartCommand}" CommandParameter="{Binding SelectedItem, ElementName=InstanceGrid}" Margin="4" Style="{StaticResource MaterialDesignFlatButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Play" Margin="0 4 4 0"/>
+                                <TextBlock Text="Start" />
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding StopCommand}" CommandParameter="{Binding SelectedItem, ElementName=InstanceGrid}" Margin="4" Style="{StaticResource MaterialDesignFlatButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Stop" Margin="0 4 4 0"/>
+                                <TextBlock Text="Stop" />
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding RestartCommand}" CommandParameter="{Binding SelectedItem, ElementName=InstanceGrid}" Margin="4" Style="{StaticResource MaterialDesignFlatButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Restart" Margin="0 4 4 0"/>
+                                <TextBlock Text="Restart" />
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding EditCommand}" CommandParameter="{Binding SelectedItem, ElementName=InstanceGrid}" Margin="4" Style="{StaticResource MaterialDesignFlatButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Pencil" Margin="0 4 4 0"/>
+                                <TextBlock Text="Edit" />
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedItem, ElementName=InstanceGrid}" Margin="4" Style="{StaticResource MaterialDesignFlatButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Delete" Margin="0 4 4 0"/>
+                                <TextBlock Text="Delete" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                    <!-- Data Grid -->
+
+                    <DataGrid x:Name="InstanceGrid"
+                          AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  materialDesign:DataGridAssist.CellPadding="8"
+                  materialDesign:DataGridAssist.ColumnHeaderPadding="2"
+                  Style="{StaticResource MaterialDesignDataGrid}"
+                  ItemsSource="{Binding ServerConfigInstances}"
+                  VerticalScrollBarVisibility="Auto"
+                  MinHeight="200"
+                  Margin="5" SelectionChanged="InstanceGrid_SelectionChanged"
+                    SelectedItem="{Binding SelectedInstance, Mode=TwoWay}"
+                  >
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="40" Header="">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Ellipse Width="12" Height="12" Margin="4">
+                                            <Ellipse.Fill>
+                                                <MultiBinding Converter="{StaticResource BoolToBrushConverterProcess}">
+                                                    <Binding Path="IsRunning"/>
+                                                </MultiBinding>
+                                            </Ellipse.Fill>
+                                        </Ellipse>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <materialDesign:DataGridTextColumn Header="Host Name" Binding="{Binding ServerHostname}" Width="4*" />
+                            <materialDesign:DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="4*" />
+                            <materialDesign:DataGridTextColumn Header="Identity" Binding="{Binding Identity}" Width="4*" />
+                            <materialDesign:DataGridTextColumn Header="Map" Binding="{Binding MapName}" Width="4*" />
+                            <materialDesign:DataGridTextColumn Header="Install Path" Binding="{Binding InstallDirectory}" Width="4*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </GroupBox>
+        </Grid>
+        <Grid Grid.Column="1" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
+            <controls:RustServerStatusControl x:Name="RustStatusControl"  HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
+        </Grid>
+    </Grid>
+</UserControl>

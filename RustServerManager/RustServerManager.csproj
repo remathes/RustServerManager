@@ -1,0 +1,115 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <BaseOutputPath>D:\</BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controls\LiveChart2Gauges.xaml.cs" />
+    <Compile Remove="Controls\QuickCommandControl.xaml.cs" />
+    <Compile Remove="Controls\RustInstanceGrid.xaml.cs" />
+    <Compile Remove="Controls\RustServerStatusControl.xaml.cs" />
+    <Compile Remove="Services\PluginProfiler.cs" />
+    <Compile Remove="Services\RustStatsCollector.cs" />
+    <Compile Remove="Utils\DbConnectionHelper.cs" />
+    <Compile Remove="ViewModels\Password.cs" />
+    <Compile Remove="ViewModels\QuickCommandViewModel.cs" />
+    <Compile Remove="ViewModels\ServerConfigViewModel.cs" />
+    <Compile Remove="Views\RconCommandInputControl.xaml.cs" />
+    <Compile Remove="Views\ServerConfigView.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\1024_512.png" />
+    <None Remove="Assets\BlackBack.png" />
+    <None Remove="Assets\bolt.png" />
+    <None Remove="Assets\GreenBack.png" />
+    <None Remove="Assets\GridBack.png" />
+    <None Remove="Assets\rustcard.png" />
+    <None Remove="Assets\RustLogo.png" />
+    <None Remove="Assets\RustMetalWall.jpg" />
+    <None Remove="Assets\RustyCargo.jpg" />
+    <None Remove="Assets\RustyOxidized.png" />
+    <None Remove="Assets\RustySilver.png" />
+    <None Remove="Assets\RustyWall.png" />
+    <None Remove="dbconfig.json" />
+    <None Remove="PlayerStats.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="Controls\LiveChart2Gauges.xaml" />
+    <Page Remove="Controls\QuickCommandControl.xaml" />
+    <Page Remove="Controls\RustInstanceGrid.xaml" />
+    <Page Remove="Controls\RustServerStatusControl.xaml" />
+    <Page Remove="Views\RconCommandInputControl.xaml" />
+    <Page Remove="Views\ServerConfigView.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="dbconfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PlayerStats.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.7.25104.5739" />
+    <PackageReference Include="LiveChartsCore" Version="2.0.0-rc5.4" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc5.4" />
+    <PackageReference Include="MySql.Data" Version="8.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.*" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.4" />
+    <PackageReference Include="Websocket.Client" Version="5.1.2" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+    <PackageReference Include="MaterialDesignColors" Version="5.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\1024_512.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\BlackBack.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\bolt.png" />
+    <Resource Include="Assets\GreenBack.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\GridBack.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\rustcard.png" />
+    <Resource Include="Assets\RustLogo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\RustMetalWall.jpg" />
+    <Resource Include="Assets\RustyCargo.jpg" />
+    <Resource Include="Assets\RustyOxidized.png" />
+    <Resource Include="Assets\RustySilver.png" />
+    <Resource Include="Assets\RustyWall.png" />
+  </ItemGroup>
+
+</Project>

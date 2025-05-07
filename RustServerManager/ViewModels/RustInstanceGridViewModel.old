@@ -1,0 +1,819 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MaterialDesignThemes.Wpf;
+using RustServerManager.Controls;
+using RustServerManager.Services;
+using RustServerManager.Utils;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+
+namespace RustServerManager.ViewModels
+{
+    public partial class RustInstanceGridViewModel : ObservableObject
+    {
+        private System.Timers.Timer _monitorTimer;
+        private Process _rustProcess;
+        public RustInstanceGridViewModel()
+        {
+            StartMonitoring();
+            _statusTimer.Tick += _statusTimer_Tick;
+            _statusTimer.Interval = TimeSpan.FromSeconds(5);
+            _statusTimer.Start();
+        }
+
+        private void _statusTimer_Tick(object sender, EventArgs e)
+        {
+
+        }
+
+        private readonly System.Windows.Threading.DispatcherTimer _statusTimer = new System.Windows.Threading.DispatcherTimer();
+
+        private void RefreshStatuses()
+        {
+            foreach (var vm in Instances)
+            {
+                vm.UpdateStatus();
+            }
+        }
+
+        public void TryAttachToRunningProcess()
+        {
+            if (string.IsNullOrWhiteSpace(RustDedicatedProcess) || !File.Exists(RustDedicatedProcess))
+                return;
+
+            string exeName = System.IO.Path.GetFileNameWithoutExtension(RustDedicatedProcess);
+            _rustProcess = Process.GetProcessesByName(exeName).FirstOrDefault(p =>
+            {
+                try
+                {
+                    return p.MainModule?.FileName == RustDedicatedProcess;
+                }
+                catch
+                {
+                    return false;
+                }
+            });
+
+            if (_rustProcess != null)
+            {
+                StartMonitoring();
+            }
+        }
+
+        private void StartMonitoring()
+        {
+            _monitorTimer = new System.Timers.Timer(5000); // 5 second interval
+            _monitorTimer.Elapsed += (_, _) => UpdateMetrics();
+            _monitorTimer.Start();
+        }
+
+
+        private bool _isRunning;
+        public bool IsRunning
+        {
+            get => _isRunning;
+            set => SetProperty(ref _isRunning, value);
+        }
+
+        private void UpdateMetrics()
+        {
+            if (_rustProcess == null || _rustProcess.HasExited) return;
+            try
+            {
+                _rustProcess.Refresh();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[RustMetrics] Failed to update: {ex.Message}");
+            }
+        }
+
+        public void UpdateStatus()
+        {
+            try
+            {
+                var exeName = System.IO.Path.GetFileNameWithoutExtension(Instance.RustDedicatedProcess);
+                IsRunning = Process.GetProcessesByName(exeName)
+                    .Any(p => string.Equals(p.MainModule?.FileName, Instance.RustDedicatedProcess, StringComparison.OrdinalIgnoreCase));
+            }
+            catch
+            {
+                IsRunning = false;
+            }
+        }
+
+
+        [ObservableProperty]
+        private string startDialogMessage;
+
+        [ObservableProperty]
+        private bool isStartDialogOpen;
+
+        public ObservableCollection<RustInstanceGridViewModel> Instances { get; set; } = new();
+        private RustInstanceGridViewModel? _selectedInstance;
+        public RustInstanceGridViewModel? SelectedInstance
+        {
+            get => _selectedInstance;
+            set
+            {
+                _selectedInstance = value;
+                OnPropertyChanged();
+
+                if (_selectedInstance != null)
+                {
+                    _selectedInstance.TryAttachToRunningProcess();
+                }
+            }
+        }
+        public RustInstanceGridViewModel Instance { get; }
+
+        public string Identity
+        {
+            get => Instance.Identity;
+            set { Instance.Identity = value; OnPropertyChanged(); }
+        }
+
+        public string ServerHostname
+        {
+            get => Instance.ServerHostname;
+            set { Instance.ServerHostname = value; OnPropertyChanged(); }
+        }
+
+        public string Description
+        {
+            get => Instance.Description;
+            set { Instance.Description = value; OnPropertyChanged(); }
+        }
+
+        public string ServerIp
+        {
+            get => Instance.ServerIp;
+            set { Instance.ServerIp = value; OnPropertyChanged(); }
+        }
+
+        public int ServerPort
+        {
+            get => Instance.ServerPort;
+            set { Instance.ServerPort = value; OnPropertyChanged(); }
+        }
+
+        public string RconIp
+        {
+            get => Instance.RconIp;
+            set { Instance.RconIp = value; OnPropertyChanged(); }
+        }
+
+        public int RconPort
+        {
+            get => Instance.RconPort;
+            set { Instance.RconPort = value; OnPropertyChanged(); }
+        }
+
+        public string RconPassword
+        {
+            get => Instance.RconPassword;
+            set { Instance.RconPassword = value; OnPropertyChanged(); }
+        }
+
+        public int RconWeb
+        {
+            get => Instance.RconWeb;
+            set { Instance.RconWeb = value; OnPropertyChanged(); }
+        }
+
+        public int MaxPlayers
+        {
+            get => Instance.MaxPlayers;
+            set { Instance.MaxPlayers = value; OnPropertyChanged(); }
+        }
+
+        public int ServerTickrate
+        {
+            get => Instance.ServerTickrate;
+            set { Instance.ServerTickrate = value; OnPropertyChanged(); }
+        }
+
+        public int ServerSaveInterval
+        {
+            get => Instance.ServerSaveInterval;
+            set { Instance.ServerSaveInterval = value; OnPropertyChanged(); }
+        }
+
+        public bool UseCustomMap
+        {
+            get => Instance.UseCustomMap;
+            set { Instance.UseCustomMap = value; OnPropertyChanged(); }
+        }
+
+        public int Seed
+        {
+            get => Instance.Seed;
+            set { Instance.Seed = value; OnPropertyChanged(); }
+        }
+
+        public string ServerCfg
+        {
+            get => Instance.ServerCfg;
+            set { Instance.ServerCfg = value; OnPropertyChanged(); }
+        }
+
+        public int WorldSize
+        {
+            get => Instance.WorldSize;
+            set { Instance.WorldSize = value; OnPropertyChanged(); }
+        }
+
+        public string MapName
+        {
+            get => Instance.MapName;
+            set { Instance.MapName = value; OnPropertyChanged(); }
+        }
+
+        public string ServerLevelUrl
+        {
+            get => Instance.ServerLevelUrl;
+            set { Instance.ServerLevelUrl = value; OnPropertyChanged(); }
+        }
+
+        public string SteamCmdPath
+        {
+            get => Instance.SteamCmdPath;
+            set { Instance.SteamCmdPath = value; OnPropertyChanged(); OnPropertyChanged(nameof(CanInstallRust)); }
+        }
+
+        public string InstallDirectory
+        {
+            get => Instance.InstallDirectory;
+            set { Instance.InstallDirectory = value; OnPropertyChanged(); OnPropertyChanged(nameof(CanInstallRust)); }
+        }
+
+        public string RustDedicatedProcess
+        {
+            get => Instance.RustDedicatedProcess;
+            set { Instance.RustDedicatedProcess = value; OnPropertyChanged(); }
+        }
+
+        public async Task LoadInstances()
+        {
+            Debug.WriteLine($"[Load Instances] Start Load Instance {Environment.TickCount} ms");
+            Debug.WriteLine($"[Load Instances] Start finding files {Environment.TickCount} ms");
+            var discovered = new List<RustInstanceGridViewModel>();
+            var steamcmd = await SafeEnumerateFiles.EnumerateFilesSafeAsync("D:\\", "steamcmd.exe", SearchOption.AllDirectories);
+            var allRustDedicatedFiles = await SafeEnumerateFiles.EnumerateFilesSafeAsync("D:\\", "RustDedicated.exe", SearchOption.AllDirectories);
+            Debug.WriteLine($"[Load Instances] Finished finding files {Environment.TickCount} ms");
+            Debug.WriteLine($"[Load Instances] Start looping each instance {Environment.TickCount} ms");
+            foreach (var file in allRustDedicatedFiles)
+            {
+
+                var identities = Directory.GetDirectories(Path.Combine(Path.GetDirectoryName(file), "server"), "*.*", SearchOption.TopDirectoryOnly);
+                if (identities.Length > 0)
+                {
+                    foreach (var identity in identities)
+                    {
+                        var instance = new RustInstanceGridViewModel();
+                        instance.RustDedicatedProcess = file;
+                        instance.InstallDirectory = Path.GetDirectoryName(file);
+                        instance.Identity = new DirectoryInfo(identity).Name;
+                        instance.ServerCfg = Path.Combine(Path.GetDirectoryName(file), "server", instance.Identity, "cfg", "server.cfg");
+
+                        var maps = Directory.GetFiles(Path.Combine(Path.GetDirectoryName(file), "server", identity), "*.map", SearchOption.TopDirectoryOnly);
+                        if (maps.Length == 1)
+                        {
+                            instance.MapName = new FileInfo(maps.First()).Name;
+                        }
+
+                        try
+                        {
+                            if (steamcmd?.Any() == true)
+                                instance.SteamCmdPath = steamcmd.First();
+
+                            if (File.Exists(instance.ServerCfg))
+                            {
+                                var lines = File.ReadAllLines(instance.ServerCfg);
+                                foreach (var line in lines)
+                                {
+                                    var trimmed = line.Trim();
+                                    if (string.IsNullOrWhiteSpace(trimmed) || trimmed.StartsWith("//")) continue;
+
+                                    var match = Regex.Match(trimmed, @"^(\S+)\s+""?(.*?)""?$");
+                                    if (!match.Success) continue;
+
+                                    var key = match.Groups[1].Value.Trim();
+                                    var value = match.Groups[2].Value.Trim();
+
+                                    switch (key.ToLowerInvariant())
+                                    {
+                                        case "server.ip":
+                                            instance.ServerIp = value;
+                                            break;
+                                        case "server.port":
+                                            instance.ServerPort = int.TryParse(value, out var port) ? port : 28015;
+                                            break;
+                                        case "server.hostname":
+                                            instance.ServerHostname = value;
+                                            break;
+                                        case "server.description":
+                                            instance.Description = value;
+                                            break;
+                                        case "server.worldsize":
+                                            instance.WorldSize = int.TryParse(value, out var size) ? size : 1000;
+                                            break;
+                                        case "server.seed":
+                                            instance.Seed = int.TryParse(value, out var seed) ? seed : 1;
+                                            break;
+                                        case "rcon.web":
+                                            instance.RconWeb = int.TryParse(value, out var rweb) ? rweb : 0;
+                                            break;
+                                        case "server.maxplayers":
+                                            instance.MaxPlayers = int.TryParse(value, out var maxp) ? maxp : 100;
+                                            break;
+                                        case "server.tickrate":
+                                            instance.ServerTickrate = int.TryParse(value, out var tick) ? tick : 1;
+                                            break;
+                                        case "server.saveinterval":
+                                            instance.ServerSaveInterval = int.TryParse(value, out var saveint) ? saveint : 300;
+                                            break;
+                                        case "rcon.ip":
+                                            instance.RconIp = value;
+                                            break;
+                                        case "rcon.port":
+                                            instance.RconPort = int.TryParse(value, out var rport) ? rport : 28016;
+                                            break;
+                                        case "rcon.password":
+                                            instance.RconPassword = value;
+                                            break;
+                                    }
+                                }
+                            }
+                            Debug.WriteLine($"[Load Instances] Adding Instance {Environment.TickCount} ms");
+                            discovered.Add(instance);
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            // Handle gracefully
+                        }
+                        catch (IOException)
+                        {
+                            // Handle gracefully
+                        }
+                    }
+                }
+            }
+
+            Debug.WriteLine($"[Load Instances] Finished Loading found: {discovered.Count} instances {Environment.TickCount} ms");
+            //Instances = new ObservableCollection<RustInstanceGridViewModel>(discovered);
+            Instances.Clear();
+            foreach (var vm in discovered)
+            {
+                Instances.Add(vm);
+            }
+        }
+
+
+
+        private void SaveInstances(ObservableCollection<RustInstanceGridViewModel> serverInstanceInstances)
+        {
+
+        }
+
+        public static void SaveAllInstances(IEnumerable<RustInstanceGridViewModel> instances, string filePath = "RustServerManager.json")
+        {
+            var configs = instances.Select(vm => vm.Instance).ToList();
+            var json = JsonSerializer.Serialize(configs, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(filePath, json);
+        }
+
+        public bool CanInstallRust =>
+            !string.IsNullOrWhiteSpace(SteamCmdPath) && File.Exists(SteamCmdPath) &&
+            !string.IsNullOrWhiteSpace(InstallDirectory) && Directory.Exists(InstallDirectory);
+
+        public void ApplyChangesFrom(RustInstanceGridViewModel other)
+        {
+            Identity = other.Identity;
+            ServerHostname = other.ServerHostname;
+            Description = other.Description;
+            ServerIp = other.ServerIp;
+            ServerPort = other.ServerPort;
+            RconIp = other.RconIp;
+            RconPort = other.RconPort;
+            RconPassword = other.RconPassword;
+            RconWeb = other.RconWeb;
+            MaxPlayers = other.MaxPlayers;
+            ServerTickrate = other.ServerTickrate;
+            ServerSaveInterval = other.ServerSaveInterval;
+            UseCustomMap = other.UseCustomMap;
+            Seed = other.Seed;
+            WorldSize = other.WorldSize;
+            MapName = other.MapName;
+            ServerLevelUrl = other.ServerLevelUrl;
+            SteamCmdPath = other.SteamCmdPath;
+            InstallDirectory = other.InstallDirectory;
+            RustDedicatedProcess = other.RustDedicatedProcess;
+            ServerCfg = other.ServerCfg;
+
+            // Save updated settings to the server.cfg file
+            string cfg = System.IO.Path.Combine(InstallDirectory, "server", Identity, "cfg", "server.cfg");
+            if (!File.Exists(cfg))
+            {
+                ServerCfg = cfg;
+                using (File.Create(cfg)) { }
+            }
+            if (!string.IsNullOrWhiteSpace(ServerCfg) && File.Exists(ServerCfg))
+            {
+                var lines = new List<string>
+                {
+                    $"server.hostname \"{ServerHostname}\"",
+                    $"server.description \"{Description}\"",
+                    $"server.ip {ServerIp}",
+                    $"server.port {ServerPort}",
+                    $"rcon.ip {RconIp}",
+                    $"rcon.port {RconPort}",
+                    $"rcon.password \"{RconPassword}\"",
+                    $"rcon.web {RconWeb}",
+                    $"server.maxplayers {MaxPlayers}",
+                    $"server.tickrate {ServerTickrate}",
+                    $"server.saveinterval {ServerSaveInterval}",
+                    $"server.seed {Seed}",
+                    $"server.worldsize {WorldSize}"
+                };
+
+                if (UseCustomMap && !string.IsNullOrWhiteSpace(ServerLevelUrl))
+                {
+                    lines.Add($"server.levelurl \"{ServerLevelUrl}\"");
+                }
+                else
+                {
+                    lines.Add($"server.seed {Seed}");
+                    lines.Add($"server.worldsize {WorldSize}");
+                }
+
+                File.WriteAllLines(ServerCfg, lines);
+            }
+        }
+
+        public IAsyncRelayCommand<RustInstanceGridViewModel> StartCommand => new AsyncRelayCommand<RustInstanceGridViewModel>(async instance =>
+        {
+            try
+            {
+                var installDir = instance.InstallDirectory;
+                var steamCmd = instance.SteamCmdPath;
+                var identity = instance.Identity;
+                var exePath = instance.RustDedicatedProcess;
+
+                if (!File.Exists(steamCmd))
+                {
+                    MessageBox.Show("SteamCMD not found.");
+                    return;
+                }
+                IsStartDialogOpen = true;
+                StartDialogMessage = "Checking for updates...";
+                var exeName = Path.GetFileNameWithoutExtension(exePath);
+                var matchingProcesses = Process.GetProcessesByName(exeName)
+                    .Where(p =>
+                    {
+                        try
+                        {
+                            return string.Equals(p.MainModule?.FileName, exePath, StringComparison.OrdinalIgnoreCase);
+                        }
+                        catch
+                        {
+                            return false;
+                        }
+                    }).ToList();
+
+                if (matchingProcesses.Any())
+                {
+                    Console.WriteLine($"⚠ Rust server is running — attempting RCON quit...");
+
+                    try
+                    {
+                        StartDialogMessage = "Shutting down server...";
+                        var rcon = RconClient.Instance;
+                        bool connected = await rcon.ConnectAsync(instance.ServerIp, (ushort)instance.RconPort, instance.RconPassword);
+
+                        if (connected)
+                        {
+                            var response = await rcon.SendCommandAsync("quit");
+                            Console.WriteLine($"🧠 RCON response: {response}");
+                            rcon.Disconnect();
+
+                            // Give it time to shut down
+                            await Task.Delay(8000);
+                        }
+                        else
+                        {
+                            Console.WriteLine("⚠ Failed to connect to RCON. Proceeding with fallback kill.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"❌ RCON quit failed: {ex.Message}");
+                    }
+
+                    // Double-check that it's really stopped
+                    foreach (var proc in matchingProcesses)
+                    {
+                        try
+                        {
+                            if (!proc.HasExited)
+                            {
+                                Console.WriteLine($"❌ Forcing kill on PID {proc.Id}");
+                                proc.Kill(true);
+                                proc.WaitForExit(10000);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Failed to stop process {proc.Id}: {ex.Message}");
+                        }
+                    }
+                }
+
+                // 2. Update Rust
+                StartDialogMessage = "Updating Rust...";
+                // ✅ 1. Run SteamCMD to update Rust
+                var steamCmdArgs = $"+login anonymous +force_install_dir \"{installDir}\" +app_update 258550 validate +quit";
+                await RunProcessAsync(steamCmd, steamCmdArgs, "Updating Rust...");
+
+                // 3. Install Oxide
+                StartDialogMessage = "Installing Oxide...";
+                // ✅ 2. Download and extract Oxide (uMod)
+                var oxideZipUrl = "https://umod.org/games/rust/download"; // Or your own endpoint
+                var oxideZipPath = Path.Combine(Path.GetTempPath(), "oxide.zip");
+
+                using (var client = new HttpClient())
+                {
+                    var bytes = await client.GetByteArrayAsync(oxideZipUrl);
+                    await File.WriteAllBytesAsync(oxideZipPath, bytes);
+                }
+
+                ZipFile.ExtractToDirectory(oxideZipPath, installDir, true);
+
+                // ✅ 3. Build server launch args
+                var args = new StringBuilder();
+                args.Append($"-batchmode ");
+                args.Append($"+server.hostname \"{instance.ServerHostname}\" ");
+                args.Append($"+server.description \"{instance.Description}\" ");
+                args.Append($"+server.identity \"{identity}\" ");
+                args.Append($"+server.ip {instance.ServerIp} ");
+                args.Append($"+server.port {instance.ServerPort} ");
+                args.Append($"+rcon.ip {instance.RconIp} ");
+                args.Append($"+rcon.port {instance.RconPort} ");
+                args.Append($"+rcon.password \"{instance.RconPassword}\" ");
+                args.Append($"+server.maxplayers {instance.MaxPlayers} ");
+                args.Append($"+server.tickrate {instance.ServerTickrate} ");
+                args.Append($"+server.saveinterval {instance.ServerSaveInterval} ");
+                args.Append($"+server.worldsize {instance.WorldSize} ");
+                args.Append($"+server.seed {instance.Seed} ");
+                if (instance.UseCustomMap && !string.IsNullOrEmpty(instance.ServerLevelUrl))
+                {
+                    // Use custom map via levelurl
+                    args.Append($"+server.levelurl \"{instance.ServerLevelUrl}\" ");
+                }
+                else
+                {
+                    // Use procedural map generation
+                    args.Append($"+server.seed {instance.Seed} ");
+                    args.Append($"+server.worldsize {instance.WorldSize} ");
+                }
+                // 4. Start server
+                StartDialogMessage = "Launching server...";
+                // ✅ 4. Start RustDedicated.exe
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    Arguments = args.ToString(),
+                    WorkingDirectory = Path.GetDirectoryName(exePath),
+                    UseShellExecute = false,
+                    CreateNoWindow = false,
+                });
+            }
+            catch (Exception ex)
+            {
+                StartDialogMessage = "Failt to start server: " + ex.Message;
+                MessageBox.Show("Failed to start server: " + ex.Message);
+            }
+            finally
+            {
+                IsStartDialogOpen = false;
+                StartDialogMessage = string.Empty;
+            }
+        });
+
+        public IAsyncRelayCommand<RustInstanceGridViewModel> StopCommand => new AsyncRelayCommand<RustInstanceGridViewModel>(async instance =>
+        {
+            try
+            {
+                var installDir = instance.InstallDirectory;
+                var steamCmd = instance.SteamCmdPath;
+                var identity = instance.Identity;
+                var exePath = instance.RustDedicatedProcess;
+
+                if (!File.Exists(steamCmd))
+                {
+                    MessageBox.Show("SteamCMD not found.");
+                    return;
+                }
+                IsStartDialogOpen = true;
+                var exeName = Path.GetFileNameWithoutExtension(exePath);
+                var matchingProcesses = Process.GetProcessesByName(exeName)
+                    .Where(p =>
+                    {
+                        try
+                        {
+                            return string.Equals(p.MainModule?.FileName, exePath, StringComparison.OrdinalIgnoreCase);
+                        }
+                        catch
+                        {
+                            return false;
+                        }
+                    }).ToList();
+
+                if (matchingProcesses.Any())
+                {
+                    Console.WriteLine($"⚠ Rust server is running — attempting RCON quit...");
+
+                    try
+                    {
+                        StartDialogMessage = "Shutting down server...";
+                        var rcon = RconClient.Instance;
+                        bool connected = await rcon.ConnectAsync(instance.ServerIp, (ushort)instance.RconPort, instance.RconPassword);
+
+                        if (connected)
+                        {
+                            var response = await rcon.SendCommandAsync("quit");
+                            Console.WriteLine($"🧠 RCON response: {response}");
+                            rcon.Disconnect();
+
+                            // Give it time to shut down
+                            await Task.Delay(8000);
+                        }
+                        else
+                        {
+                            Console.WriteLine("⚠ Failed to connect to RCON. Proceeding with fallback kill.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"❌ RCON quit failed: {ex.Message}");
+                    }
+
+                    // Double-check that it's really stopped
+                    foreach (var proc in matchingProcesses)
+                    {
+                        try
+                        {
+                            if (!proc.HasExited)
+                            {
+                                Console.WriteLine($"❌ Forcing kill on PID {proc.Id}");
+                                proc.Kill(true);
+                                proc.WaitForExit(10000);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Failed to stop process {proc.Id}: {ex.Message}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+            finally
+            {
+                IsStartDialogOpen = false;
+                StartDialogMessage = string.Empty;
+            }
+        });
+
+        public IAsyncRelayCommand<RustInstanceGridViewModel> RestartCommand => new AsyncRelayCommand<RustInstanceGridViewModel>(async instance =>
+        {
+
+        });
+
+        public ICommand EditCommand => new AsyncRelayCommand<RustInstanceGridViewModel>(async instance =>
+        {
+            if (instance == null) return;
+
+            // Create a deep copy so the dialog doesn't edit the live object until confirmed
+            var editable = new RustInstanceGridViewModel
+            {
+                Identity = instance.Identity,
+                ServerHostname = instance.ServerHostname,
+                Description = instance.Description,
+                ServerIp = instance.ServerIp,
+                ServerPort = instance.ServerPort,
+                RconIp = instance.RconIp,
+                RconPort = instance.RconPort,
+                RconPassword = instance.RconPassword,
+                RconWeb = instance.RconWeb,
+                MaxPlayers = instance.MaxPlayers,
+                ServerTickrate = instance.ServerTickrate,
+                ServerSaveInterval = instance.ServerSaveInterval,
+                UseCustomMap = instance.UseCustomMap,
+                Seed = instance.Seed,
+                WorldSize = instance.WorldSize,
+                MapName = instance.MapName,
+                ServerLevelUrl = instance.ServerLevelUrl,
+                SteamCmdPath = instance.SteamCmdPath,
+                InstallDirectory = instance.InstallDirectory,
+                RustDedicatedProcess = instance.RustDedicatedProcess,
+                ServerCfg = instance.ServerCfg
+            };
+
+            var dialog = new RustInstanceEditDialog { DataContext = editable };
+            var result = await DialogHost.Show(dialog, "MainDialog");
+
+            if (result is bool saved && saved)
+            {
+                instance.ApplyChangesFrom(editable);
+            }
+        });
+
+
+        public IAsyncRelayCommand<RustInstanceGridViewModel> DeleteCommand => new AsyncRelayCommand<RustInstanceGridViewModel>(async instance =>
+        {
+            if (MessageBox.Show($"Are you sure you want to delete {instance.Identity}?", "Confirm Delete", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+
+            }
+        });
+
+        public IAsyncRelayCommand NewCommand => new AsyncRelayCommand(async () =>
+        {
+            var vm = new RustInstanceGridViewModel();
+            var dialog = new RustInstanceEditDialog { DataContext = vm };
+
+            var result = await DialogHost.Show(dialog, "MainDialog");
+
+            if (result is bool saved && saved)
+            {
+                Instances.Add(vm);
+                // Optional: SaveInstances(ServerConfigInstances);
+            }
+        });
+
+        private async Task RunProcessAsync(string fileName, string arguments, string title)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            var psi = new ProcessStartInfo
+            {
+                FileName = fileName,
+                Arguments = arguments,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+            };
+
+            var process = new Process { StartInfo = psi, EnableRaisingEvents = true };
+
+            process.Exited += (s, e) => tcs.SetResult(true);
+
+            process.OutputDataReceived += (s, e) => Console.WriteLine(e.Data);
+            process.ErrorDataReceived += (s, e) => Console.Error.WriteLine(e.Data);
+
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+
+            await tcs.Task;
+        }
+    }
+
+    public class RelayCommand<T> : ICommand
+    {
+        private readonly Action<T> _execute;
+        private readonly Predicate<T> _canExecute;
+
+        public RelayCommand(Action<T> execute, Predicate<T> canExecute = null)
+        {
+            _execute = execute;
+            _canExecute = canExecute;
+        }
+
+        public bool CanExecute(object parameter) => _canExecute == null || _canExecute((T)parameter);
+
+        public void Execute(object parameter) => _execute((T)parameter);
+
+        public event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
+    }
+}

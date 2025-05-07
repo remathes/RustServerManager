@@ -1,0 +1,147 @@
+﻿<UserControl x:Class="RustServerManager.Controls.FileExplorerControl"
+             x:Name="RootControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:local="clr-namespace:RustServerManager.Controls"
+             xmlns:controls="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:conv="clr-namespace:RustServerManager.Converters"
+             Height="Auto" Width="Auto">
+    <UserControl.Resources>
+        <conv:EditableFileVisibilityConverter x:Key="EditableFileVisibilityConverter" />
+        <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Edit" Click="Edit_Click" />
+            <MenuItem Header="Rename" Click="Rename_Click" />
+            <MenuItem Header="Delete" Click="Delete_Click" />
+        </ContextMenu>
+        <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- Toolbar -->
+            <RowDefinition Height="*" />
+            <!-- Content -->
+        </Grid.RowDefinitions>
+
+        <!-- Top Toolbar -->
+        <ToolBar Grid.Row="0" Background="{DynamicResource MaterialDesignPaper}"
+                 materialDesign:ColorZoneAssist.Mode="PrimaryDark">
+            <Button Content="Back" Margin="5" />
+            <Button Content="Forward" Margin="5" />
+            <Button Content="Up" Margin="5" />
+            <Button Content="Copy" Command="{Binding CopyCommand}" Margin="5" />
+            <Button Content="Paste" Command="{Binding PasteCommand}" Margin="5" />
+            <TextBox x:Name="SearchBox"
+                     Width="200"
+                     Margin="10,0"
+                     materialDesign:HintAssist.Hint="Search..."
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+        </ToolBar>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250" />
+                <!-- Navigation Tree -->
+                <ColumnDefinition Width="5" />
+                <!-- Splitter -->
+                <ColumnDefinition Width="*" />
+                <!-- File Grid -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Folder Tree -->
+            <TreeView x:Name="FolderTreeView"
+          Grid.Column="0"
+          Background="{DynamicResource MaterialDesignPaper}"
+          VirtualizingStackPanel.IsVirtualizing="True"
+          VirtualizingStackPanel.VirtualizationMode="Recycling"
+          ScrollViewer.IsDeferredScrollingEnabled="True"
+          AllowDrop="True"
+          Drop="FolderTreeView_Drop"
+          DragOver="FolderTreeView_DragOver"
+          PreviewMouseMove="FolderTreeView_PreviewMouseMove" SelectedItemChanged="FolderTreeView_SelectedItemChanged">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding SubItems}" >
+                        <HierarchicalDataTemplate.ItemContainerStyle>
+                            <Style TargetType="TreeViewItem">
+                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                            </Style>
+                        </HierarchicalDataTemplate.ItemContainerStyle>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="{Binding IconKind}"
+                                                     Width="20" Height="20"
+                                                     Margin="0,0,5,0"
+                                                     VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding Name}" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1"
+                          Width="5"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          Background="Gray" />
+
+            <!-- File Grid with Breadcrumb -->
+            <DockPanel Grid.Column="2">
+                <ItemsControl x:Name="Breadcrumb"
+                              DockPanel.Dock="Top"
+                              Margin="5"
+                              Background="{DynamicResource MaterialDesignPaper}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="{Binding Name}"
+                                        Command="{Binding NavigateCommand}"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Margin="0,0,5,0" />
+                                <TextBlock Text="/" VerticalAlignment="Center" Margin="0,0,5,0" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <DataGrid x:Name="FileDataGrid"
+          AutoGenerateColumns="False"
+          CanUserAddRows="False"
+          Margin="5"
+          IsReadOnly="True"
+          SelectionMode="Single"
+          Background="{DynamicResource MaterialDesignPaper}"
+
+          GridLinesVisibility="All"
+          RowHeaderWidth="0"
+          PreviewMouseMove="FileDataGrid_PreviewMouseMove"
+          AllowDrop="True"
+          Drop="FileDataGrid_Drop"
+          DragOver="FileDataGrid_DragOver"
+          RowStyle="{StaticResource DefaultRowStyle}">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Icon" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <materialDesign:PackIcon Kind="{Binding IconKind}" Width="20" Height="20" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
+                        <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="100" />
+                        <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="100" />
+                        <DataGridTextColumn Header="Modified" Binding="{Binding Modified}" Width="150" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</UserControl>

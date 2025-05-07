@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="RustServerManager.Views.PlayerDetailPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="400">
+    <Border Padding="15" CornerRadius="10" Background="White" BorderBrush="Gray" BorderThickness="1">
+        <StackPanel>
+            <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" Margin="0 0 0 8" />
+            <Image Source="{Binding FavoriteItemIconPath}" Width="64" Height="64" Margin="0 0 0 10" />
+            <TextBlock Text="{Binding SteamId, StringFormat=Steam ID: {0}}" Margin="0 0 0 5" />
+            <TextBlock Text="{Binding Playtime, StringFormat=Playtime: {0:hh\:mm\:ss}}" />
+            <TextBlock Text="{Binding LastSeen, StringFormat=Last Seen: {0:G}}" Margin="0 0 0 10" />
+
+            <TextBlock Text="Combat Stats" FontWeight="Bold" Margin="0 10 0 5" />
+            <TextBlock Text="{Binding Kills, StringFormat=Kills: {0}}" />
+            <TextBlock Text="{Binding Deaths, StringFormat=Deaths: {0}}" />
+            <TextBlock Text="{Binding Headshots, StringFormat=Headshots: {0}}" />
+
+            <TextBlock Text="Resource Stats" FontWeight="Bold" Margin="10 10 0 5" />
+            <TextBlock Text="{Binding ResourcesGathered, StringFormat=Gathered: {0}}" />
+            <TextBlock Text="{Binding ItemsLooted, StringFormat=Looted: {0}}" />
+            <TextBlock Text="{Binding StructuresBuilt, StringFormat=Built: {0}}" />
+        </StackPanel>
+    </Border>
+</UserControl>

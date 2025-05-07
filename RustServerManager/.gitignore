@@ -1,0 +1,19 @@
+﻿# Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build output
+bin/
+obj/
+*.log
+
+# Package outputs
+*.nupkg
+*.snupkg
+
+# Others
+*.dbmdl
+*.db

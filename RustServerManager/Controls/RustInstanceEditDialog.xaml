@@ -1,0 +1,175 @@
+﻿<UserControl x:Class="RustServerManager.Controls.RustInstanceEditDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:conv="clr-namespace:RustServerManager.Converters"
+             Height="600">
+
+    <UserControl.Resources>
+        <conv:BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <conv:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVis" />
+
+        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+            <Setter Property="materialDesign:HintAssist.FloatingScale" Value="1.0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Margin" Value="5 5 5 10" />
+        </Style>
+
+        <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+            <Setter Property="materialDesign:HintAssist.FloatingScale" Value="1.0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Margin" Value="5 5 5 10" />
+        </Style>
+
+        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+            <Setter Property="Margin" Value="5 10 5 0" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <materialDesign:Card Padding="30" Margin="20" Style="{StaticResource MaterialDesignElevatedCard}">
+            <StackPanel>
+                <TextBlock Text="Rust Instance Configuration" FontSize="20" FontWeight="Bold" Margin="0 0 0 30" />
+
+                <GroupBox Header="General Settings" Margin="0 0 0 30">
+                    <StackPanel Margin="10">
+                        <TextBox Text="{Binding ServerHostname}" materialDesign:HintAssist.Hint="Host Name" />
+                        <TextBox Text="{Binding Description}" materialDesign:HintAssist.Hint="Description" />
+                        <TextBox Text="{Binding ServerUrl}" materialDesign:HintAssist.Hint="Server URL" />
+                        <TextBox Text="{Binding Identity}" IsReadOnly="True" materialDesign:HintAssist.Hint="Identity (auto-set)" />
+                        <TextBox Text="{Binding ServerIp}" materialDesign:HintAssist.Hint="Server IP - This will be set on creation" />
+                        <TextBox Text="{Binding ServerPort}" materialDesign:HintAssist.Hint="Server Port - This will be set on creation" />
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="RCON Settings" Margin="0 0 0 30">
+                <StackPanel Margin="10">
+                        <TextBox Text="{Binding RconIp}" materialDesign:HintAssist.Hint="RCON IP - This will be set on creation" />
+                        <TextBox Text="{Binding RconPort}" materialDesign:HintAssist.Hint="RCON Port - This will be set on creation" />
+                    <TextBox x:Name="TextBoxRconPassword" Text="{Binding RconPassword}" materialDesign:HintAssist.Hint="RCON Password" />
+                    <Button Margin="0 0 0 10" Content="Generate RCON Password" Click="GenerateRconPassword_Click" Width="200" />
+                    <TextBox Text="{Binding RconWeb}" materialDesign:HintAssist.Hint="RCON Web Enabled (0/1)" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Map Settings" Margin="0 0 0 30">
+                <StackPanel Margin="10">
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                        <ToggleButton IsChecked="{Binding UseCustomMap}" Style="{StaticResource MaterialDesignSwitchToggleButton}" Margin="0 0 10 0" />
+                        <TextBlock Text="Use Custom Map" Style="{StaticResource MaterialDesignButtonTextBlock}" />
+                    </StackPanel>
+
+                    <StackPanel Visibility="{Binding UseCustomMap, Converter={StaticResource InverseBoolToVis}}">
+                            <ComboBox Width="300" Text="{Binding WorldSize}" materialDesign:HintAssist.Hint="World Size">
+                                <ComboBox.ItemsSource>
+                                    <x:Array Type="sys:Int32">
+                                        <sys:Int32>1000</sys:Int32>
+                                        <sys:Int32>1100</sys:Int32>
+                                        <sys:Int32>1200</sys:Int32>
+                                        <sys:Int32>1300</sys:Int32>
+                                        <sys:Int32>1400</sys:Int32>
+                                        <sys:Int32>1500</sys:Int32>
+                                        <sys:Int32>1600</sys:Int32>
+                                        <sys:Int32>1700</sys:Int32>
+                                        <sys:Int32>1800</sys:Int32>
+                                        <sys:Int32>1900</sys:Int32>
+                                        <sys:Int32>2000</sys:Int32>
+                                        <sys:Int32>2100</sys:Int32>
+                                        <sys:Int32>2200</sys:Int32>
+                                        <sys:Int32>2300</sys:Int32>
+                                        <sys:Int32>2400</sys:Int32>
+                                        <sys:Int32>2500</sys:Int32>
+                                        <sys:Int32>2600</sys:Int32>
+                                        <sys:Int32>2700</sys:Int32>
+                                        <sys:Int32>2800</sys:Int32>
+                                        <sys:Int32>2900</sys:Int32>
+                                        <sys:Int32>3000</sys:Int32>
+                                        <sys:Int32>3100</sys:Int32>
+                                        <sys:Int32>3200</sys:Int32>
+                                        <sys:Int32>3300</sys:Int32>
+                                        <sys:Int32>3400</sys:Int32>
+                                        <sys:Int32>3500</sys:Int32>
+                                        <sys:Int32>3600</sys:Int32>
+                                        <sys:Int32>3700</sys:Int32>
+                                        <sys:Int32>3800</sys:Int32>
+                                        <sys:Int32>3900</sys:Int32>
+                                        <sys:Int32>4000</sys:Int32>
+                                        <sys:Int32>4100</sys:Int32>
+                                        <sys:Int32>4200</sys:Int32>
+                                        <sys:Int32>4300</sys:Int32>
+                                        <sys:Int32>4400</sys:Int32>
+                                        <sys:Int32>4500</sys:Int32>
+                                        <sys:Int32>4600</sys:Int32>
+                                        <sys:Int32>4700</sys:Int32>
+                                        <sys:Int32>4800</sys:Int32>
+                                        <sys:Int32>4900</sys:Int32>
+                                        <sys:Int32>5000</sys:Int32>
+                                        <sys:Int32>5100</sys:Int32>
+                                        <sys:Int32>5200</sys:Int32>
+                                        <sys:Int32>5300</sys:Int32>
+                                        <sys:Int32>5400</sys:Int32>
+                                        <sys:Int32>5500</sys:Int32>
+                                        <sys:Int32>5600</sys:Int32>
+                                        <sys:Int32>5700</sys:Int32>
+                                        <sys:Int32>5800</sys:Int32>
+                                        <sys:Int32>5900</sys:Int32>
+                                        <sys:Int32>6000</sys:Int32>
+                                    </x:Array>
+                                </ComboBox.ItemsSource>
+                            </ComboBox>
+                            <TextBox Text="{Binding Seed}" materialDesign:HintAssist.Hint="Seed" />
+                        <Button Content="Generate Seed" Command="{Binding GenerateSeedCommand}" Width="160" />
+                    </StackPanel>
+
+                    <StackPanel Visibility="{Binding UseCustomMap, Converter={StaticResource BoolToVis}}">
+                        <TextBox Text="{Binding ServerLevelUrl}" materialDesign:HintAssist.Hint="Custom Map URL" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="MySQL Settings" Margin="0 0 0 30">
+                <StackPanel Margin="10">
+                    <TextBox Text="{Binding MySqlHost}" materialDesign:HintAssist.Hint="Host" />
+                    <TextBox Text="{Binding MySqlPort}" materialDesign:HintAssist.Hint="Port" />
+                    <TextBox Text="{Binding MySqlDatabaseName}" IsReadOnly="True" materialDesign:HintAssist.Hint="Database Name" />
+                    <TextBox Text="{Binding MySqlUserName}" materialDesign:HintAssist.Hint="User" />
+                    <TextBox Text="{Binding MySqlPassword}" materialDesign:HintAssist.Hint="Password" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Install Configuration" Margin="0 0 0 30">
+                <StackPanel Margin="10">
+                    <StackPanel Orientation="Horizontal" Margin="0 0 10 0">
+                        <TextBox Text="{Binding SteamCmdPath}" Width="350" materialDesign:HintAssist.Hint="SteamCMD Path" />
+                        <Button Width="100" Content="Browse" Click="OnBrowseSteamCmdClicked" />
+                    </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Text="{Binding InstallDirectory}" Width="350" materialDesign:HintAssist.Hint="Install Directory" />
+                            <Button Width="100" Content="Browse" Click="OnBrowseInstallDirClicked" />
+                        </StackPanel>
+                    </StackPanel>
+            </GroupBox>
+
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 30">
+                <ToggleButton IsChecked="{Binding AutoStart}" Margin="5" Style="{StaticResource MaterialDesignSwitchToggleButton}" />
+                <TextBlock Margin="5" Text="Auto Start" Style="{StaticResource MaterialDesignButtonTextBlock}" />
+                <ToggleButton IsChecked="{Binding AutoUpdate}" Margin="5" Style="{StaticResource MaterialDesignSwitchToggleButton}" />
+                <TextBlock Margin="5" Text="Auto Update" Style="{StaticResource MaterialDesignButtonTextBlock}" />
+            </StackPanel>
+
+            <GroupBox Header="Advanced / Debug Info" Margin="0 0 0 30">
+                <StackPanel Margin="10">
+                    <TextBox Text="{Binding RustDedicatedProcess}" IsReadOnly="True" materialDesign:HintAssist.Hint="RustDedicated.exe Path" />
+                    <TextBox Text="{Binding ServerCfg}" IsReadOnly="True" materialDesign:HintAssist.Hint="server.cfg Path" />
+                </StackPanel>
+            </GroupBox>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                <Button Width="100" Content="Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
+                <Button Width="100" Content="Save" Click="OnSaveClicked" />
+            </StackPanel>
+            </StackPanel>
+        </materialDesign:Card>
+    </ScrollViewer>
+</UserControl>

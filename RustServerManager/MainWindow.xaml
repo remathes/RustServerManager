@@ -1,0 +1,27 @@
+﻿<Window x:Class="RustServerManager.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
+    xmlns:views="clr-namespace:RustServerManager.Views"
+    mc:Ignorable="d"
+    ResizeMode="CanMinimize"
+    WindowStartupLocation="CenterScreen"
+    SizeToContent="WidthAndHeight"
+    Style="{StaticResource MaterialDesignWindow}"
+    Title="Rust Server Manager">
+
+    <materialDesign:DialogHost x:Name="RootDialog" Identifier="MainDialog" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <!-- Card wraps entire content -->
+            <materialDesign:Card Padding="10" Margin="5" materialDesign:ElevationAssist.Elevation="Dp3"
+                                 Background="Black"
+                                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <!-- RustInstanceView -->
+                <views:RustServerGridView x:Name="RustGridView" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+                <!-- RustInstanceView -->
+            </materialDesign:Card>
+        </Grid>
+    </materialDesign:DialogHost>
+</Window>

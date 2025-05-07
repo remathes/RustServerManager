@@ -1,0 +1,7 @@
+{
+	"MySqlHost":"localhost",
+	"MySqlPort": 3306,
+	"MySqlDatabaseName":"rustserverinstances",
+	"MySqlUsername":"rustadmin",
+	"MySqlPassword":""
+}
