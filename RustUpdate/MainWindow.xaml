@@ -1,0 +1,81 @@
+<Window x:Class="RustUpdate.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
+        Title="Rust Server Install / Update"
+        ResizeMode="CanMinimize"
+        SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource MaterialDesignWindow}" 
+        Icon="/mainwindow.ico" 
+        Topmost="True">
+
+    <Grid Margin="15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50*" />
+            <ColumnDefinition Width="50*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <!-- Buttons -->
+        <DockPanel Grid.Row="0" Grid.Column="0">
+            <Button DockPanel.Dock="Left" Click="OpenSettings_Click" Margin="10">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Cog" Width="20" Margin="0 0 5 0"/>
+                    <TextBlock Text="Settings"/>
+                </StackPanel>
+            </Button>
+        </DockPanel>
+
+        <DockPanel Grid.Row="0" Grid.Column="1">
+            <!-- Theme Toggle -->
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" Margin="8" HorizontalAlignment="Right">
+                <TextBlock Text="Theme" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <ToggleButton x:Name="DarkModeToggle"
+                                      Width="48"
+                                      Checked="DarkModeToggle_Changed"
+                                      Unchecked="DarkModeToggle_Changed"
+                                      Background="{DynamicResource MaterialDesignPaper}"
+                                      Style="{StaticResource MaterialDesignSwitchToggleButton}" />
+            </StackPanel>
+        </DockPanel>
+        
+        <!-- Version Info -->
+        <TextBlock Grid.Row="1" Grid.Column="0" x:Name="RustVersionLabel" FontSize="16" Margin="10"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" x:Name="RustCurrentVersionLabel" FontSize="16" Margin="10"/>
+        <Button Grid.Row="3" Grid.Column="0" x:Name="UpdateRustButton" Click="UpdateRust_Click" 
+                    Margin="10">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Download" Width="20" Margin="0 0 5 0"/>
+                <TextBlock Text="Update Rust"/>
+            </StackPanel>
+        </Button>
+
+        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="OxideVersionLabel" FontSize="16" Margin="10"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="OxideCurrentVersionLabel" FontSize="16" Margin="10"/>
+        <Button Grid.Row="3" Grid.Column="1" x:Name="UpdateOxideButton" Click="UpdateOxide_Click"
+                    Margin="10">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="CloudDownload" Width="20" Margin="0 0 5 0"/>
+                <TextBlock Text="Update Oxide"/>
+            </StackPanel>
+        </Button>
+
+        <!-- Rust Update Status -->
+        <TextBlock x:Name="RustStatusLabel"
+                   MaxHeight="40"
+                   Grid.Row="4"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="3"
+                   Margin="5"
+                   FontStyle="Italic"
+                   Foreground="Gray"
+                   FontSize="18"
+                   Text="" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+    </Grid>
+</Window>
