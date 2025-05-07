@@ -9,14 +9,13 @@ A free and open-source desktop tool to monitor, manage, and control Rust servers
 ## 🚀 Features
 
 - 🔥 **Rust-Themed UI** with molten glow and lava-styled panels
-- 📈 **Live CPU, RAM, Network, and Disk usage charts**
-- 💬 **RCON Console** built-in for sending commands and reading logs
+- 📈 **Live CPU, RAM usage charts**
+- 💬 **RCON Console** built-in for sending commands and reading logs needs some help :)
 - 🎛️ **Plugin manager** to enable/disable and deploy Oxide plugins
-- 📊 **Player stats tracking** (kills, uptime, inventory, and more)
+- 📊 **Player stats tracking** (kills, uptime, inventory, and more) are on the way
 - ♻️ **Multi-instance server management**
 - ⚙️ **Startup config, auto-restart, and backup support**
 - ☁️ **MySQL-backed server + player data**
-- 💾 Includes daily spin rewards, loot tracking, map config, and more
 
 ---
 
