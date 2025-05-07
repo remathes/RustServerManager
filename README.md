@@ -47,9 +47,12 @@ PRs welcome! Check out the [Projects tab](https://github.com/remathes/RustServer
 ---
 
 ## ☕ Support
-
-If you find this useful, you can:
-
+- I am a novice program type person. I have messed around with
+- code for 20 years but still don't understand a lot but I can
+- make my way around to get things working. Also 75% of this was
+- built from Chatgpt so if it looks odd/off it is because well its
+- AI and my limited knowledge working together with concepts and
+- ideas. Feel free do download mess around or what ever!
 - ⭐ Star the repo
 - 💬 Share it with other server admins
 
