@@ -2,7 +2,7 @@
 
 A free and open-source desktop tool to monitor, manage, and control Rust servers — with a modern forge-inspired UI and real-time data.
 
-![screenshot](Assets/screenshot.png)
+![Preview](preview.png)
 
 ---
 
