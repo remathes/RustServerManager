@@ -1,9 +1,9 @@
 ﻿using MaterialDesignThemes.Wpf;
-using System.Collections.ObjectModel;
-using System.IO;
 using System;
-using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
+using System.Runtime.CompilerServices;
 
 public class ExplorerItemViewModel : INotifyPropertyChanged
 {

@@ -1,8 +1,5 @@
 ﻿using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
-using MaterialDesignThemes.Wpf;
-using System.Configuration;
-using System.Data;
 using System.Windows;
 
 namespace RustServerManager;

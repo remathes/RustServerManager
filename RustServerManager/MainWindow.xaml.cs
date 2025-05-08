@@ -1,24 +1,13 @@
 ﻿// MainWindow.xaml.cs - Updated for MaterialDesign 5.x theme handling
 using MaterialDesignThemes.Wpf;
-using RustServerManager.Controls;
-using RustServerManager.ViewModels;
-using RustServerManager.Views;
-using System.Linq;
-using System;
-using System.Windows;
-using System.Windows.Controls;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
-using System.Threading.Tasks;
-using static RustServerManager.Controls.NetworkCounterPickerDialog;
-using System.Collections.Generic;
-using Org.BouncyCastle.Tls;
-using RustServerManager.Utils;
-using System.Net.NetworkInformation;
-using System.Diagnostics;
-using System.Xml.Linq;
 using RustServerManager.Models;
+using RustServerManager.Utils;
+using RustServerManager.ViewModels;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace RustServerManager
 {

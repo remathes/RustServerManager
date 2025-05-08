@@ -1,13 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using CommunityToolkit.Mvvm.Input;
+using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System;
-using System.Windows.Input;
 using System.Linq;
-using CommunityToolkit.Mvvm.Input;
+using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Diagnostics;
+using System.Windows.Input;
 
 public class FileExplorerViewModel : INotifyPropertyChanged
 {

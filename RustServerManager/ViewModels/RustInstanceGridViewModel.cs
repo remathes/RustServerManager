@@ -30,43 +30,6 @@ namespace RustServerManager.ViewModels
 {
     public partial class RustInstanceGridViewModel : ObservableObject, INotifyPropertyChanged
     {
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        internal struct CONSOLE_FONT_INFO_EX
-        {
-            public uint cbSize;
-            public uint nFont;
-            public COORD dwFontSize;
-            public int FontFamily;
-            public int FontWeight;
-
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-            public string FaceName;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct COORD
-        {
-            public short X;
-            public short Y;
-
-            public COORD(short x, short y)
-            {
-                X = x;
-                Y = y;
-            }
-        }
-
-        private const int STD_OUTPUT_HANDLE = -11;
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern IntPtr GetStdHandle(int nStdHandle);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool SetCurrentConsoleFontEx(IntPtr consoleOutput, bool maximumWindow, ref CONSOLE_FONT_INFO_EX lpConsoleCurrentFontEx);
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
-
-        public RustServerStatsViewModel StatsViewModel { get; } = new();
         private RconClient _rconClient;
         public string StartDialogMessage { get; set; }
         public bool IsStartDialogOpen { get; set; }
@@ -74,9 +37,9 @@ namespace RustServerManager.ViewModels
         [ObservableProperty]
         private RustInstanceGridItemViewModel? selectedInstance;
 
-        public UserControl? SelectedPage => SelectedInstance?.CurrentPage;
+        public UserControl SelectedPage => SelectedInstance?.CurrentPage;
 
-        partial void OnSelectedInstanceChanged(RustInstanceGridItemViewModel? value)
+        partial void OnSelectedInstanceChanged(RustInstanceGridItemViewModel value)
         {
             OnPropertyChanged(nameof(SelectedPage));
         }
@@ -660,23 +623,6 @@ namespace RustServerManager.ViewModels
             Directory.CreateDirectory(logFolder);
 
             return Path.Combine(logFolder, $"serverlog-{DateTime.Now:MMddyyyy}.log");
-        }
-
-        private static void SetConsoleFontToConsolas()
-        {
-            var hnd = GetStdHandle(STD_OUTPUT_HANDLE);
-            if (hnd == IntPtr.Zero) return;
-
-            var info = new CONSOLE_FONT_INFO_EX
-            {
-                cbSize = (uint)Marshal.SizeOf<CONSOLE_FONT_INFO_EX>(),
-                FaceName = "Consolas",
-                dwFontSize = new COORD(10, 18), // Width x Height of each character
-                FontFamily = 54, // Fixed font
-                FontWeight = 400  // Normal weight
-            };
-
-            SetCurrentConsoleFontEx(hnd, false, ref info);
         }
     }
 }

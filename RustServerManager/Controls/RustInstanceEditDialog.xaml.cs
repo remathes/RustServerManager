@@ -1,21 +1,13 @@
 ﻿// RustInstanceEditDialog.xaml.cs
 using MaterialDesignThemes.Wpf;
 using Ookii.Dialogs.Wpf;
+using RustServerManager.ViewModels;
 using System;
-using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
-using RustServerManager.ViewModels;
-using System.Linq;
-using System.IO;
-using System.Security.Principal;
-using System.Runtime.Intrinsics.X86;
-using LiveChartsCore.Geo;
-using RustServerManager.Utils;
-using RustServerManager.Models;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Collections.Generic;
 
 namespace RustServerManager.Controls
 {

@@ -1,7 +1,5 @@
 ﻿using RustServerManager.Utils;
 using System.Windows;
-using System.Windows.Shapes;
-using System.IO;
 using Path = System.IO.Path;
 
 namespace RustServerManager.Controls

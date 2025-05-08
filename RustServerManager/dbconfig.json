@@ -1,7 +1,7 @@
 {
-	"MySqlHost":"localhost",
+	"MySqlHost": "localhost",
 	"MySqlPort": 3306,
-	"MySqlDatabaseName":"rustserverinstances",
-	"MySqlUsername":"rustadmin",
-	"MySqlPassword":""
+	"MySqlDatabaseName": "rustserverinstances",
+	"MySqlUsername": "rustadmin",
+	"MySqlPassword": "4f7S=WL-AL<_quk"
 }

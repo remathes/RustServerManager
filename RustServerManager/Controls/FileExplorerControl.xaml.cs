@@ -1,14 +1,13 @@
-﻿using System.IO;
-using System.Windows;
+﻿using MaterialDesignThemes.Wpf;
+using RustServerManager.ViewModels;
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using MaterialDesignThemes.Wpf;
-using RustServerManager.ViewModels;
-using System.Threading.Tasks;
-using System.Windows.Controls.Primitives;
-using System.Diagnostics;
 
 namespace RustServerManager.Controls
 {

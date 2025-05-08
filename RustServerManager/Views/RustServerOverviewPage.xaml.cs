@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Media.Animation;
 
 namespace RustServerManager.Views
 {
@@ -16,8 +15,7 @@ namespace RustServerManager.Views
 
         private void RustServerOverviewPage_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            //Storyboard pulse = (Storyboard)FindResource("ForgePulseAnimation");
-            //pulse.Begin(ForgeCard, true);
+
         }
     }
 }

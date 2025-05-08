@@ -1,7 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using RustServerManager.Models;
-using RustServerManager.ViewModels;
 
 namespace RustServerManager.Models
 {

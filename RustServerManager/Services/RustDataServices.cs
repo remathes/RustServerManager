@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using RustServerManager.Models;
 using RustServerManager.ViewModels;
-using RustServerManager.Services;
+using System.Collections.Generic;
 using System.Data;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace RustServerManager.Services
 {

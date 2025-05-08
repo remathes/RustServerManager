@@ -13,7 +13,6 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
 
 namespace RustServerManager.ViewModels
 {

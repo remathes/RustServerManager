@@ -1,10 +1,4 @@
-﻿using LiveChartsCore.Defaults;
-using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore;
-using RustServerManager.ViewModels;
-using System.Collections.Generic;
-using System.Windows.Controls;
-using LiveChartsCore.SkiaSharpView.WPF;
+﻿using System.Windows.Controls;
 
 namespace RustServerManager.Views
 {

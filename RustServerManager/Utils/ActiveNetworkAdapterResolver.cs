@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RustServerManager.Utils
+﻿namespace RustServerManager.Utils
 {
     using System;
     using System.ComponentModel;
     using System.Diagnostics;
-    using System.Linq;
     using System.Net;
     using System.Net.NetworkInformation;
     using System.Runtime.InteropServices;
