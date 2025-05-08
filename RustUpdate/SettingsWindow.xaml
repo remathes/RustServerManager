@@ -2,41 +2,83 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="Settings" WindowStartupLocation="CenterScreen" Topmost="True" Top="1"
-        MinWidth="570"
-        MaxWidth="570"
-        MinHeight="220"
-        MaxHeight="220"
+        Title="Settings" Topmost="True" Top="1"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
         Style="{StaticResource MaterialDesignWindow}"
         Icon="/settings.ico"
+        Background="Transparent"
         >
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="110 10 10 10">
-            <CheckBox x:Name="AutoUpdateCheckBox" Content="Enable automatic update check"
-                      Style="{StaticResource MaterialDesignCheckBox}"
-              VerticalAlignment="Center" HorizontalAlignment="Center" />
-        </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 0 0 10">
-            <Label Content="SteamCMD Path:" Width="120"/>
-            <TextBox x:Name="SteamPathBox" Width="300"/>
-            <Button Content="Browse" Click="BrowseSteam_Click" Width="100" Margin="10 0 0 0"/>
-        </StackPanel>
+    <Window.Resources>
+        <DropShadowEffect x:Key="LavaGlowEffect"
+          BlurRadius="80"
+          Color="OrangeRed"
+          ShadowDepth="0"
+          Opacity="0.6" />
 
-        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0 0 0 10">
-            <Label Content="Rust Server Path:" Width="120"/>
-            <TextBox x:Name="RustPathBox" Width="300"/>
-            <Button Content="Browse" Click="BrowseRust_Click" Width="100" Margin="10 0 0 0"/>
-        </StackPanel>
+        <Style x:Key="LavaCardStyle" TargetType="materialDesign:Card">
+            <Setter Property="Effect" Value="{StaticResource LavaGlowEffect}" />
+        </Style>
+        <Style x:Key="RustButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#BF360C" Offset="0"/>
+                        <GradientStop Color="#A33E12" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="2" Color="#99000000" Opacity="0.6"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#8B3A00"/>
+            <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+        </Style>
+    </Window.Resources>
+    <materialDesign:Card
+        Style="{StaticResource LavaCardStyle}"
+        Padding="8" 
+        Margin="15" materialDesign:UniformCornerRadius="5" 
+        materialDesign:ElevationAssist.Elevation="Dp2">
+        <materialDesign:Card.Background>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Center">
-            <Button Content="Save" Click="Save_Click" Width="75" Margin="0 0 10 0"/>
-            <Button Content="Cancel" Click="Cancel_Click" Width="75"/>
-        </StackPanel>
-    </Grid>
+            <ImageBrush ImageSource="pack://application:,,,/RustUpdate;component/Assets/RustySilver.png"
+                    Stretch="UniformToFill"/>
+        </materialDesign:Card.Background>
+        <materialDesign:Card Opacity="0.8" Padding="8" Margin="16" materialDesign:ElevationAssist.Elevation="Dp2" materialDesign:UniformCornerRadius="5">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 0 0 10">
+                    <TextBlock Text="SteamCMD Path:" Width="120" VerticalAlignment="Center" 
+                           Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                    <TextBox x:Name="SteamPathBox" Width="300"/>
+                    <Button Style="{StaticResource RustButtonStyle}" Content="Browse" Click="BrowseSteam_Click" Width="100" Margin="10 0 0 0"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0 0 0 10">
+                    <TextBlock Text="Rust Server Path:" Width="120" VerticalAlignment="Center" 
+                           Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                    <TextBox x:Name="RustPathBox" Width="300"/>
+                    <Button Style="{StaticResource RustButtonStyle}" Content="Browse" Click="BrowseRust_Click" Width="100" Margin="10 0 0 0"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource RustButtonStyle}" Content="Save" Click="Save_Click" Width="75" Margin="0 0 10 0"/>
+                    <Button Style="{StaticResource RustButtonStyle}" Content="Cancel" Click="Cancel_Click" Width="75"/>
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
+    </materialDesign:Card>
 </Window>

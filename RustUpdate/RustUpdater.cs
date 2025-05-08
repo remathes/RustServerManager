@@ -1,8 +1,8 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -24,59 +24,12 @@ namespace RustUpdate
         public string RustExePath => Path.Combine(RustInstallPath, "RustDedicated.exe");
         public string RustManifest => Path.Combine(RustInstallPath, "steamapps", "appmanifest_258550.acf");
         private string VersionFile => Path.Combine(RustInstallPath, "version.txt");
-        public System.Windows.Forms.NotifyIcon? TrayIcon { get; private set; }
 
         public RustUpdater(string steamCMDPath, string rustInstallPath, string steamCMDExePath)
         {
             SteamCMDPath = steamCMDPath;
             RustInstallPath = rustInstallPath;
             SteamCmdExePath = steamCMDExePath;
-            InitializeTray();
-        }
-
-        private void InitializeTray()
-        {
-            // Add context menu with Exit option
-            var contextMenu = new ContextMenuStrip();
-            var exitItem = new ToolStripMenuItem("Exit");
-            exitItem.Click += (s, e) => System.Windows.Application.Current.Shutdown();
-            contextMenu.Items.Add(exitItem);
-            TrayIcon = new System.Windows.Forms.NotifyIcon
-            {
-                Icon = new System.Drawing.Icon("mainwindow.ico"),
-                Visible = true,
-                Text = "Rust Updater",
-                ContextMenuStrip = contextMenu
-
-            };    
-
-            TrayIcon.DoubleClick += (s, e) =>
-            {
-                foreach (Window window in System.Windows.Application.Current.Windows)
-                {
-                    if (window is MainWindow mw)
-                    {
-                        mw.trayicon = TrayIcon;
-                        mw.Show();
-                        mw.WindowState = WindowState.Normal;
-                        mw.Activate();
-                        mw.trayicon = TrayIcon;
-                        break;
-                    }
-                }
-            };
-        }
-
-        public void HandleMinimize(Window window)
-        {
-            window.StateChanged += (s, e) =>
-            {
-                if (window.WindowState == WindowState.Minimized)
-                {
-                    window.Hide();
-                    TrayIcon?.ShowBalloonTip(1000, "Rust Server Updater", "Still running in background", System.Windows.Forms.ToolTipIcon.Info);
-                }
-            };
         }
 
         public async Task<(string installed, string latest)> GetRustVersionsAsync()
@@ -270,11 +223,6 @@ namespace RustUpdate
         public static string GetFileVersion(string path)
         {
             return File.Exists(path) ? FileVersionInfo.GetVersionInfo(path).FileVersion : "Not Found";
-        }
-
-        public void NotifyUpdateAvailable(string message)
-        {
-            TrayIcon?.ShowBalloonTip(3000, "Rust Updater", message, ToolTipIcon.Info);
         }
     }
 }

@@ -19,7 +19,6 @@ namespace RustUpdate
 
             SteamPathBox.Text = settings.SteamCMDPath;
             RustPathBox.Text = settings.RustInstallPath;
-            AutoUpdateCheckBox.IsChecked = settings.EnableAutoUpdateCheck;
         }
 
         private void BrowseSteam_Click(object sender, RoutedEventArgs e)
@@ -50,10 +49,8 @@ namespace RustUpdate
             }
             string path = "AppSettings.json";
             bool result;
-            bool IsChecked = bool.TryParse(AutoUpdateCheckBox.IsChecked.ToString(), out result);
             settings.SteamCMDPath = SteamPathBox.Text;
             settings.RustInstallPath = RustPathBox.Text;
-            settings.EnableAutoUpdateCheck = result;
             string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(path, json);
             DialogResult = true;
