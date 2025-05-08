@@ -2,21 +2,20 @@
 
 A free and open-source desktop tool to monitor, manage, and control Rust servers — with a modern forge-inspired UI and real-time data.
 
-![screenshot](Assets/screenshot.png)
+![Preview](RustServerManager/preview.png)
 
 ---
 
 ## 🚀 Features
 
 - 🔥 **Rust-Themed UI** with molten glow and lava-styled panels
-- 📈 **Live CPU, RAM, Network, and Disk usage charts**
-- 💬 **RCON Console** built-in for sending commands and reading logs
+- 📈 **Live CPU, RAM usage charts**
+- 💬 **RCON Console** built-in for sending commands and reading logs needs some help :)
 - 🎛️ **Plugin manager** to enable/disable and deploy Oxide plugins
-- 📊 **Player stats tracking** (kills, uptime, inventory, and more)
+- 📊 **Player stats tracking** (kills, uptime, inventory, and more) are on the way
 - ♻️ **Multi-instance server management**
 - ⚙️ **Startup config, auto-restart, and backup support**
 - ☁️ **MySQL-backed server + player data**
-- 💾 Includes daily spin rewards, loot tracking, map config, and more
 
 ---
 
@@ -47,9 +46,12 @@ PRs welcome! Check out the [Projects tab](https://github.com/remathes/RustServer
 ---
 
 ## ☕ Support
-
-If you find this useful, you can:
-
+- I am a novice program type person. I have messed around with
+- code for 20 years but still don't understand a lot but I can
+- make my way around to get things working. Also 75% of this was
+- built from Chatgpt so if it looks odd/off it is because well its
+- AI and my limited knowledge working together with concepts and
+- ideas. Feel free do download mess around or what ever!
 - ⭐ Star the repo
 - 💬 Share it with other server admins
 
