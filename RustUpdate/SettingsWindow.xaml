@@ -8,6 +8,7 @@
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource MaterialDesignWindow}"
         Icon="/settings.ico"
+        FontFamily="{StaticResource RustFont}"
         Background="Transparent"
         >
     <Window.Resources>
@@ -61,22 +62,22 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 0 0 10">
-                    <TextBlock Text="SteamCMD Path:" Width="120" VerticalAlignment="Center" 
+                    <TextBlock  FontFamily="{StaticResource RustFont}" Text="SteamCMD Path:" Width="130" VerticalAlignment="Center" 
                            Style="{StaticResource MaterialDesignBody2TextBlock}"/>
-                    <TextBox x:Name="SteamPathBox" Width="300"/>
+                    <TextBox  FontFamily="{StaticResource RustFont}" x:Name="SteamPathBox" Width="300" Style="{StaticResource MaterialDesignTextBox}"/>
                     <Button Style="{StaticResource RustButtonStyle}" Content="Browse" Click="BrowseSteam_Click" Width="100" Margin="10 0 0 0"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0 0 0 10">
-                    <TextBlock Text="Rust Server Path:" Width="120" VerticalAlignment="Center" 
+                    <TextBlock  FontFamily="{StaticResource RustFont}" Text="Rust Server Path:" Width="130" VerticalAlignment="Center" 
                            Style="{StaticResource MaterialDesignBody2TextBlock}"/>
-                    <TextBox x:Name="RustPathBox" Width="300"/>
-                    <Button Style="{StaticResource RustButtonStyle}" Content="Browse" Click="BrowseRust_Click" Width="100" Margin="10 0 0 0"/>
+                    <TextBox  FontFamily="{StaticResource RustFont}" x:Name="RustPathBox" Width="300" Style="{StaticResource MaterialDesignTextBox}"/>
+                    <Button  FontFamily="{StaticResource RustFont}" Style="{StaticResource RustButtonStyle}" Content="Browse" Click="BrowseRust_Click" Width="100" Margin="10 0 0 0"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
-                    <Button Style="{StaticResource RustButtonStyle}" Content="Save" Click="Save_Click" Width="75" Margin="0 0 10 0"/>
-                    <Button Style="{StaticResource RustButtonStyle}" Content="Cancel" Click="Cancel_Click" Width="75"/>
+                    <Button  FontFamily="{StaticResource RustFont}" Style="{StaticResource RustButtonStyle}" Content="Save" Click="Save_Click" Width="75" Margin="0 0 10 0"/>
+                    <Button  FontFamily="{StaticResource RustFont}" Style="{StaticResource RustButtonStyle}" Content="Cancel" Click="Cancel_Click" Width="75"/>
                 </StackPanel>
             </Grid>
         </materialDesign:Card>

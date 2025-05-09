@@ -24,6 +24,22 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.CheckBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.RadioButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <FontFamily x:Key="RustFont">pack://application:,,,/Fonts/#Russo One</FontFamily>
+
+            <Style TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="{StaticResource RustFont}" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+
+            <Style TargetType="TextBox">
+                <Setter Property="FontFamily" Value="{StaticResource RustFont}" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="FontFamily" Value="{StaticResource RustFont}" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

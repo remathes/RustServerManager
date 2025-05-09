@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Text.Json;
 using System.Windows.Shapes;
 using System.Windows.Media.TextFormatting;
+using System.Windows.Media.Imaging;
+using System.Windows.Media.Animation;
 
 namespace RustUpdate
 {
@@ -20,6 +22,7 @@ namespace RustUpdate
         private readonly PaletteHelper _paletteHelper = new();
         public MainWindow()
         {
+            Loaded += MainWindow_Loaded;
             try
             {
                 settings = AppSettings.Load();
@@ -58,46 +61,123 @@ namespace RustUpdate
             }
         }
 
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            var rotateStoryboard = (Storyboard)FindResource("RotateBoltAnimation");
+            rotateStoryboard.Begin();
+        }
+
         public async void LoadVersions()
         {
             OverlayGrid.Visibility = Visibility.Visible;
+
             var (installedRust, latestRust) = await updater.GetRustVersionsAsync();
             var installedOxide = updater.GetInstalledOxideVersion();
             var latestOxide = await updater.GetLatestOxideVersionAsync();
 
+            // Neutral consistent text color
+
+            // === RUST ===
             bool rustInstalled = installedRust != "Not Found";
             bool rustNeedsUpdate = rustInstalled && string.Compare(installedRust, latestRust, true) < 0;
 
-            // Installed Version Update labels
-            RustCurrentVersionLabel.Text = rustInstalled ? (rustNeedsUpdate ? $"Rust Update Available: {installedRust}" : $"Rust is Up To Date: {installedRust}") : "Install Rust";
-            RustCurrentVersionLabel.Foreground = rustInstalled ? (rustNeedsUpdate ? Brushes.Red : Brushes.LimeGreen) : Brushes.Orange;
+            RustCurrentVersionLabel.Text = rustInstalled
+                ? (rustNeedsUpdate ? $"Rust Update: {installedRust}" : $"Rust is Up To Date: {installedRust}")
+                : "Install Rust";
 
-            // Online Check Update labels
-            RustVersionLabel.Text = latestRust != null ? $"Rust Version Available: {latestRust}" : "Rust Version Available: Unknown";
-            RustVersionLabel.Foreground = latestRust !=null? Brushes.LimeGreen : Brushes.Orange;
+            RustVersionLabel.Text = latestRust != null
+                ? $"Rust Version: {latestRust}" : "Rust Version: Unknown";
 
-            //Button Update / Up To Date / Install
-            UpdateRustButton.Content = rustInstalled ? (rustNeedsUpdate ? "Update Rust" : "Rust Up To Date") : "Install Rust";
-            //Enable Button if Not Fount or Needs Update
+            RustStatusIcon.Kind = !rustInstalled
+                ? PackIconKind.CloudDownload
+                : rustNeedsUpdate
+                    ? PackIconKind.Update
+                    : PackIconKind.CheckCircle;
+            RustStatusIcon.Foreground = !rustInstalled
+                ? Brushes.Orange
+                : rustNeedsUpdate
+                    ? Brushes.OrangeRed
+                    : Brushes.Green;
+
+            UpdateRustButton.Content = rustInstalled
+                ? (rustNeedsUpdate ? "Update Rust" : "Rust Up To Date")
+                : "Install Rust";
             UpdateRustButton.IsEnabled = !rustInstalled || rustNeedsUpdate;
 
+            // === OXIDE ===
             bool oxideInstalled = installedOxide != "Not Found";
             bool oxideNeedsUpdate = oxideInstalled && string.Compare(installedOxide, latestOxide, true) < 0;
 
-            // Installed Version Update labels
-            OxideCurrentVersionLabel.Text = oxideInstalled ? (oxideNeedsUpdate ? $"Oxide Update Available: {installedOxide}" : $"Oxide is Up To Date {installedOxide}") : "Install Oxide";
-            OxideCurrentVersionLabel.Foreground = oxideInstalled ? (oxideNeedsUpdate ? Brushes.Red : Brushes.LimeGreen) : Brushes.Orange;
+            OxideCurrentVersionLabel.Text = oxideInstalled
+                ? (oxideNeedsUpdate ? $"Oxide Update: {installedOxide}" : $"Oxide is Up To Date: {installedOxide}")
+                : "Install Oxide";
 
-            // Online Check Update labels
-            OxideVersionLabel.Text = latestOxide != null ? $"Oxide Version Available: {latestOxide}" : "Oxide Version Available: Unknown";
-            OxideVersionLabel.Foreground = latestOxide != null ? Brushes.LimeGreen : Brushes.Orange;
-            
-            //Button Update / Up To Date / Install
-            UpdateOxideButton.Content = oxideInstalled ? (oxideNeedsUpdate ? "Update Oxide" : "Oxide Up To Date") : "Install Oxide";
-            //Enable Button if Not Fount or Needs Update
+            OxideVersionLabel.Text = latestOxide != null
+                ? $"Oxide Version: {latestOxide}" : "Oxide Version: Unknown";
+
+            OxideStatusIcon.Kind = !oxideInstalled
+                ? PackIconKind.CloudDownload
+                : oxideNeedsUpdate
+                    ? PackIconKind.Update
+                    : PackIconKind.CheckCircle;
+            OxideStatusIcon.Foreground = !oxideInstalled
+                ? Brushes.Orange
+                : oxideNeedsUpdate
+                    ? Brushes.OrangeRed
+                    : Brushes.Green;
+
+            UpdateOxideButton.Content = oxideInstalled
+                ? (oxideNeedsUpdate ? "Update Oxide" : "Oxide Up To Date")
+                : "Install Oxide";
             UpdateOxideButton.IsEnabled = !oxideInstalled || oxideNeedsUpdate;
+
             OverlayGrid.Visibility = Visibility.Hidden;
         }
+
+        private BitmapImage LoadIcon(string filename)
+        {
+            return new BitmapImage(new Uri($"pack://application:,,,/RustServerManager;component/Assets/{filename}", UriKind.Absolute));
+        }
+        //public async void LoadVersions()
+        //{
+        //    OverlayGrid.Visibility = Visibility.Visible;
+        //    var (installedRust, latestRust) = await updater.GetRustVersionsAsync();
+        //    var installedOxide = updater.GetInstalledOxideVersion();
+        //    var latestOxide = await updater.GetLatestOxideVersionAsync();
+
+        //    bool rustInstalled = installedRust != "Not Found";
+        //    bool rustNeedsUpdate = rustInstalled && string.Compare(installedRust, latestRust, true) < 0;
+
+        //    // Installed Version Update labels
+        //    RustCurrentVersionLabel.Text = rustInstalled ? (rustNeedsUpdate ? $"Rust Update Available: {installedRust}" : $"Rust is Up To Date: {installedRust}") : "Install Rust";
+        //    RustCurrentVersionLabel.Foreground = rustInstalled ? (rustNeedsUpdate ? Brushes.Red : Brushes.LimeGreen) : Brushes.Orange;
+
+        //    // Online Check Update labels
+        //    RustVersionLabel.Text = latestRust != null ? $"Rust Version Available: {latestRust}" : "Rust Version Available: Unknown";
+        //    RustVersionLabel.Foreground = latestRust != null ? Brushes.LimeGreen : Brushes.Orange;
+
+        //    //Button Update / Up To Date / Install
+        //    UpdateRustButton.Content = rustInstalled ? (rustNeedsUpdate ? "Update Rust" : "Rust Up To Date") : "Install Rust";
+        //    //Enable Button if Not Fount or Needs Update
+        //    UpdateRustButton.IsEnabled = !rustInstalled || rustNeedsUpdate;
+
+        //    bool oxideInstalled = installedOxide != "Not Found";
+        //    bool oxideNeedsUpdate = oxideInstalled && string.Compare(installedOxide, latestOxide, true) < 0;
+
+        //    // Installed Version Update labels
+        //    OxideCurrentVersionLabel.Text = oxideInstalled ? (oxideNeedsUpdate ? $"Oxide Update Available: {installedOxide}" : $"Oxide is Up To Date {installedOxide}") : "Install Oxide";
+        //    OxideCurrentVersionLabel.Foreground = oxideInstalled ? (oxideNeedsUpdate ? Brushes.Red : Brushes.LimeGreen) : Brushes.Orange;
+
+        //    // Online Check Update labels
+        //    OxideVersionLabel.Text = latestOxide != null ? $"Oxide Version Available: {latestOxide}" : "Oxide Version Available: Unknown";
+        //    OxideVersionLabel.Foreground = latestOxide != null ? Brushes.LimeGreen : Brushes.Orange;
+
+        //    //Button Update / Up To Date / Install
+        //    UpdateOxideButton.Content = oxideInstalled ? (oxideNeedsUpdate ? "Update Oxide" : "Oxide Up To Date") : "Install Oxide";
+        //    //Enable Button if Not Fount or Needs Update
+        //    UpdateOxideButton.IsEnabled = !oxideInstalled || oxideNeedsUpdate;
+        //    OverlayGrid.Visibility = Visibility.Hidden;
+        //}
 
         public async void UpdateRust_Click(object sender, RoutedEventArgs e)
         {

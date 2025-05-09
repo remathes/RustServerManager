@@ -6,23 +6,40 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         Title="Rust Server Install / Update"
-        ResizeMode="CanMinimize"
-        SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource MaterialDesignWindow}"
+        SizeToContent="WidthAndHeight"
         Icon="/mainwindow.ico"
+         FontFamily="{StaticResource RustFont}"
         Background="Transparent"
         Topmost="True">
     <Window.Resources>
-        <DropShadowEffect x:Key="LavaGlowEffect"
-          BlurRadius="80"
-          Color="OrangeRed"
-          ShadowDepth="0"
-          Opacity="0.6" />
+        <!-- Background texture -->
+        <ImageBrush x:Key="RustPlateBrush"
+             ImageSource="pack://application:,,,/RustUpdate;component/Assets/RustSilverWall2.png"
+             Stretch="Fill"/>
 
-        <Style x:Key="LavaCardStyle" TargetType="materialDesign:Card">
-            <Setter Property="Effect" Value="{StaticResource LavaGlowEffect}" />
-        </Style>
+        <!-- Lava glow effect -->
+        <DropShadowEffect x:Key="LavaGlow"
+                   BlurRadius="100"
+                   Color="#FF4500"
+                   ShadowDepth="0"
+                   Opacity="0.8"/>
+        <Storyboard x:Key="RotateBoltAnimation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="BoltTopLeft"
+              Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+              From="0" To="360" Duration="0:0:8" />
+            <DoubleAnimation Storyboard.TargetName="BoltTopRight"
+              Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+              From="0" To="360" Duration="0:0:8" />
+            <DoubleAnimation Storyboard.TargetName="BoltBottomLeft"
+              Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+              From="0" To="360" Duration="0:0:8" />
+            <DoubleAnimation Storyboard.TargetName="BoltBottomRight"
+              Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+              From="0" To="360" Duration="0:0:8" />
+        </Storyboard>
+
         <Style x:Key="RustButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
             <Setter Property="Background">
                 <Setter.Value>
@@ -47,77 +64,157 @@
         </Style>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
-    <materialDesign:Card Padding="8" Margin="15" 
-                         Style="{StaticResource LavaCardStyle}"
-                         materialDesign:UniformCornerRadius="5" 
-                         materialDesign:ElevationAssist.Elevation="Dp2"
-                         >
-        <materialDesign:Card.Background>
+    <Grid Background="Transparent" Margin="10">
+        <!-- Outer glowing border -->
+        <Border Effect="{StaticResource LavaGlow}"
+            CornerRadius="12"
+            Padding="4"
+            Background="Transparent"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
 
-            <ImageBrush ImageSource="pack://application:,,,/RustUpdate;component/Assets/RustySilver.png"
-                    Stretch="UniformToFill"/>
-        </materialDesign:Card.Background>
-        <Grid>
-            <materialDesign:Card Opacity="0.8" Padding="8" Margin="16" materialDesign:ElevationAssist.Elevation="Dp2" materialDesign:UniformCornerRadius="5">
-            <Grid Margin="15">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+            <!-- Inner rusted panel -->
+            <Border Background="{StaticResource RustPlateBrush}"
+                CornerRadius="8"
+                Padding="20">
+                <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Image x:Name="BoltTopLeft"
+   Source="pack://application:,,,/RustUpdate;component/Assets/bolt.png"
+   Width="36" Height="36"
+   HorizontalAlignment="Left" VerticalAlignment="Top"
+   Margin="4"  RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.RenderTransform>
+                            <RotateTransform CenterX="18" CenterY="18"/>
+                        </Image.RenderTransform>
+                    </Image>
 
-                <!-- Version Info -->
-                <TextBlock Grid.Row="0" Grid.Column="0" x:Name="RustVersionLabel" Margin="5" Style="{StaticResource MaterialDesignHeadlineSmallTextBlock}"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" x:Name="RustCurrentVersionLabel" Style="{StaticResource MaterialDesignHeadlineSmallTextBlock}" Margin="5"/>
-                <Button MinHeight="50" MinWidth="300"  Grid.Row="2" Grid.Column="0" x:Name="UpdateRustButton" Click="UpdateRust_Click" 
-                    Style="{StaticResource RustButtonStyle}"
+                    <Image x:Name="BoltTopRight"
+   Source="pack://application:,,,/RustUpdate;component/Assets/bolt.png"
+   Width="36" Height="36"
+   HorizontalAlignment="Right" VerticalAlignment="Top"
+   Margin="4"
+                        RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.RenderTransform>
+                            <RotateTransform CenterX="18" CenterY="18"/>
+                        </Image.RenderTransform>
+                    </Image>
+
+                    <Image x:Name="BoltBottomLeft"
+   Source="pack://application:,,,/RustUpdate;component/Assets/bolt.png"
+   Width="36" Height="36"
+   HorizontalAlignment="Left" VerticalAlignment="Bottom"
+   Margin="4"  RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.RenderTransform>
+                            <RotateTransform CenterX="18" CenterY="18"/>
+                        </Image.RenderTransform>
+                    </Image>
+
+                    <Image x:Name="BoltBottomRight"
+   Source="pack://application:,,,/RustUpdate;component/Assets/bolt.png"
+   Width="36" Height="36"
+   HorizontalAlignment="Right" VerticalAlignment="Bottom"
+   Margin="4"  RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.RenderTransform>
+                            <RotateTransform CenterX="18" CenterY="18"/>
+                        </Image.RenderTransform>
+                    </Image>
+                    <StackPanel Margin="50" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Version Info -->
+                            <TextBlock  FontFamily="{StaticResource RustFont}" Grid.Row="0" Grid.Column="0" x:Name="RustVersionLabel" Margin="5"                                    
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Foreground="White" />
+                            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+                                <TextBlock  x:Name="RustCurrentVersionLabel" VerticalAlignment="Center"                                    
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Foreground="White" 
+                                        Margin="5"/>
+                                <materialDesign:PackIcon x:Name="RustStatusIcon" VerticalAlignment="Center" Width="30" Height="30" Margin="0,0,8,0"/>
+                            </StackPanel>
+                            <!-- Button -->
+                            <Button Grid.Row="2" Grid.Column="0" x:Name="UpdateRustButton" Click="UpdateRust_Click" 
+                                    FontSize="16"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                        Style="{StaticResource RustButtonStyle}"
                     Margin="5">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Download" Width="20" Margin="0 0 5 0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Update Rust" Style="{StaticResource MaterialDesignBody1TextBlock}" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Download" Width="20" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Update Rust" Style="{StaticResource MaterialDesignBody1TextBlock}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
 
-                <TextBlock Grid.Row="0" Grid.Column="1" x:Name="OxideVersionLabel" Style="{StaticResource MaterialDesignHeadlineSmallTextBlock}" Margin="5"/>
-                <TextBlock Grid.Row="1" Grid.Column="1" x:Name="OxideCurrentVersionLabel" Style="{StaticResource MaterialDesignHeadlineSmallTextBlock}" Margin="5"/>
-                <Button MinHeight="50" MinWidth="300" Grid.Row="2" Grid.Column="1" x:Name="UpdateOxideButton" Click="UpdateOxide_Click" 
-                    Style="{StaticResource RustButtonStyle}"
+                            <TextBlock Grid.Row="0" Grid.Column="1" x:Name="OxideVersionLabel"                                    
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Foreground="White" 
+                                   Margin="5"/>
+                            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                                <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" x:Name="OxideCurrentVersionLabel"                                    
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Foreground="White" 
+                                       Margin="5"/>
+                                <materialDesign:PackIcon x:Name="OxideStatusIcon" VerticalAlignment="Center" Width="30" Height="30" Margin="0,0,8,0"/>
+                            </StackPanel>
+                            <!-- Button -->
+                            <Button Grid.Row="2" Grid.Column="1" x:Name="UpdateOxideButton" Click="UpdateOxide_Click" 
+                                    FontSize="16"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                        Style="{StaticResource RustButtonStyle}"
                     Margin="5">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="CloudDownload" Width="20" Margin="0 0 5 0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Update Oxide" Style="{StaticResource MaterialDesignButtonTextBlock}" VerticalAlignment="Center"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="CloudDownload" Width="20" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Update Oxide" FontSize="16"
+                                   FontWeight="Bold"
+                                   Foreground="White" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <!-- Button -->
+                            <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Click="OpenSettings_Click" 
+                         FontFamily="{StaticResource RustFont}"
+                        Margin="5" Style="{StaticResource RustButtonStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Cog" Width="20" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Settings" FontSize="16"
+                                   FontWeight="Bold"
+                                   Foreground="White" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
                     </StackPanel>
-                </Button>
-                <Button Grid.Row="3" MinHeight="50" MaxWidth="260" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Click="OpenSettings_Click" Margin="5" Style="{StaticResource RustButtonStyle}">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Cog" Width="20" Margin="0 0 5 0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Settings" Style="{StaticResource MaterialDesignBody1TextBlock}" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
-            </Grid>
-        </materialDesign:Card>
-            <Grid x:Name="OverlayGrid" Background="Black"
-          Opacity="0.8"
-        Panel.ZIndex="99">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Height="80">
-                    <mah:ProgressRing IsActive="True" Width="48" Height="48" Foreground="LimeGreen" VerticalAlignment="Center"  HorizontalAlignment="Center"/>
-                    <TextBlock x:Name="RustStatusLabel" Margin="10" 
-            Foreground="White"
-            MinWidth="300"
-            FontWeight="SemiBold" 
-            FontSize="16" 
-            TextWrapping="Wrap"
-            HorizontalAlignment="Center" 
-            VerticalAlignment="Center"/>
-                </StackPanel>
-            </Grid>
+                </Grid>
+            </Border>
+        </Border>
+        <Grid x:Name="OverlayGrid" Background="Black"
+  Opacity="0.8"
+Panel.ZIndex="99">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Height="80">
+                <mah:ProgressRing IsActive="True" Width="48" Height="48" Foreground="LimeGreen" VerticalAlignment="Center"  HorizontalAlignment="Center"/>
+                <TextBlock x:Name="RustStatusLabel" Margin="10" 
+    Foreground="White"
+    MinWidth="300"
+    FontWeight="SemiBold" 
+    FontSize="16" 
+    TextWrapping="Wrap"
+    HorizontalAlignment="Center" 
+    VerticalAlignment="Center"/>
+            </StackPanel>
         </Grid>
-    </materialDesign:Card>
+    </Grid>
     <!-- Loading Overlay -->
 </Window>

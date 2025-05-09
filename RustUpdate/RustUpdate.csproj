@@ -9,6 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\bolt.png" />
+    <None Remove="Assets\RustSilverWall2.png" />
+    <None Remove="Fonts\RussoOne-Regular.ttf" />
     <None Remove="mainwindow.ico" />
     <None Remove="rust_server_multi_size.ico" />
     <None Remove="settings.ico" />
@@ -22,7 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\bolt.png" />
+    <Resource Include="Assets\RustSilverWall2.png" />
     <Resource Include="Assets\RustySilver.png" />
+    <Resource Include="Fonts\RussoOne-Regular.ttf" />
     <Resource Include="mainwindow.ico" />
     <Resource Include="settings.ico" />
   </ItemGroup>
