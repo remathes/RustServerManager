@@ -131,6 +131,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\RustMetalWall.jpg" />
+    <Resource Include="Assets\RustSilverWall2.png" />
     <Resource Include="Assets\RustyCargo.jpg" />
     <Resource Include="Assets\RustyOxidized.png" />
     <Resource Include="Assets\RustySilver.png" />

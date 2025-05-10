@@ -186,6 +186,7 @@
                             </Button>
                             <!-- Button -->
                             <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Click="OpenSettings_Click" 
+                                    MaxWidth="200"
                          FontFamily="{StaticResource RustFont}"
                         Margin="5" Style="{StaticResource RustButtonStyle}">
                                 <StackPanel Orientation="Horizontal">

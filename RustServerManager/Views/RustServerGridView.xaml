@@ -1,194 +1,270 @@
-﻿<UserControl x:Class="RustServerManager.Views.RustServerGridView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:controls="clr-namespace:RustServerManager.Controls"
-             xmlns:views="clr-namespace:RustServerManager.Views"
-             xmlns:converters="clr-namespace:RustServerManager.Converters"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             Background="Transparent">
+﻿<UserControl
+    x:Class="RustServerManager.Views.RustServerGridView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:RustServerManager.Controls"
+    xmlns:converters="clr-namespace:RustServerManager.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:RustServerManager.Views"
+    Background="Transparent"
+    mc:Ignorable="d">
     <UserControl.Resources>
-        <converters:RustProcessStatusBrushConverter x:Key="RustStatusBrushConverter"/>
-        <DropShadowEffect x:Key="LavaGlowEffect"
-                  BlurRadius="80"
-                  Color="OrangeRed"
-                  ShadowDepth="0"
-                  Opacity="0.6" />
+        <converters:RustProcessStatusBrushConverter x:Key="RustStatusBrushConverter" />
+        <DropShadowEffect
+            x:Key="LavaGlowEffect"
+            BlurRadius="80"
+            Opacity="0.6"
+            ShadowDepth="0"
+            Color="OrangeRed" />
 
         <Style x:Key="LavaCardStyle" TargetType="materialDesign:Card">
             <Setter Property="Effect" Value="{StaticResource LavaGlowEffect}" />
         </Style>
-        <Style x:Key="RustButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+        <Style
+            x:Key="RustButtonStyle"
+            BasedOn="{StaticResource MaterialDesignFlatButton}"
+            TargetType="Button">
             <Setter Property="Background">
                 <Setter.Value>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#BF360C" Offset="0"/>
-                        <GradientStop Color="#A33E12" Offset="1"/>
+                        <GradientStop Offset="0" Color="#BF360C" />
+                        <GradientStop Offset="1" Color="#A33E12" />
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Padding" Value="8"/>
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Padding" Value="8" />
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="10" ShadowDepth="2" Color="#99000000" Opacity="0.6"/>
+                    <DropShadowEffect
+                        BlurRadius="10"
+                        Opacity="0.6"
+                        ShadowDepth="2"
+                        Color="#99000000" />
                 </Setter.Value>
             </Setter>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#8B3A00"/>
-            <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
-            <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="#8B3A00" />
+            <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="OverridesDefaultStyle" Value="True" />
         </Style>
     </UserControl.Resources>
-    <Grid>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <!-- fill remaining -->
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <!--  fill remaining  -->
         </Grid.RowDefinitions>
 
-        <!-- Toolbar -->
-        <materialDesign:Card Padding="5"
-                             x:Name="ForgeCard"
-                     Margin="5"
-                     materialDesign:ElevationAssist.Elevation="Dp2"
-                     HorizontalAlignment="Stretch"
-                     VerticalAlignment="Top"
-                     materialDesign:UniformCornerRadius="10"
-                             Style="{StaticResource LavaCardStyle}"
-                     Height="120">
+        <!--  Toolbar  -->
+        <materialDesign:Card
+            x:Name="ForgeCard"
+            Grid.Row="0"
+            Height="120"
+            Margin="15 10 15 10"
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Stretch"
+            materialDesign:ElevationAssist.Elevation="Dp2"
+            materialDesign:UniformCornerRadius="10"
+            Style="{StaticResource LavaCardStyle}">
             <materialDesign:Card.Background>
-
-                <ImageBrush ImageSource="pack://application:,,,/RustServerManager;component/Assets/RustySilver.png"
-                    Stretch="UniformToFill"/>
+                <ImageBrush ImageSource="pack://application:,,,/RustServerManager;component/Assets/RustSilverWall2.png" Stretch="UniformToFill" />
             </materialDesign:Card.Background>
-
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-
-                <!-- 🔩 Top Left -->
-                <Image Source="/Assets/bolt.png"
-               Width="32" Height="32"
-               HorizontalAlignment="Left" VerticalAlignment="Top"
-               Margin="2" Grid.Column="0"
-               RenderTransformOrigin="0.5,0.5"
-               SnapsToDevicePixels="True"
-               RenderOptions.BitmapScalingMode="HighQuality">
+                <!--  🔩 Top Left  -->
+                <Image
+                    Grid.Column="0"
+                    Width="36"
+                    Height="36"
+                    Margin="2"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    RenderOptions.BitmapScalingMode="HighQuality"
+                    RenderTransformOrigin="0.5,0.5"
+                    SnapsToDevicePixels="True"
+                    Source="/Assets/bolt.png">
                     <Image.RenderTransform>
-                        <RotateTransform/>
+                        <RotateTransform />
                     </Image.RenderTransform>
                     <Image.Triggers>
                         <EventTrigger RoutedEvent="Image.Loaded">
                             <BeginStoryboard>
                                 <Storyboard RepeatBehavior="Forever">
-                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Angle"
-                                             From="0" To="360" Duration="0:0:20" />
+                                    <DoubleAnimation
+                                        Storyboard.TargetProperty="RenderTransform.Angle"
+                                        From="0"
+                                        To="360"
+                                        Duration="0:0:20" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
                     </Image.Triggers>
                 </Image>
-
-                <!-- 🔩 Top Right -->
-                <Image Source="/Assets/bolt.png"
-               Width="32" Height="32"
-               HorizontalAlignment="Right" VerticalAlignment="Top"
-               Margin="2" Grid.Column="2"
-               RenderTransformOrigin="0.5,0.5"
-               SnapsToDevicePixels="True"
-               RenderOptions.BitmapScalingMode="HighQuality">
+                <!--  🔩 Top Right  -->
+                <Image
+                    Grid.Column="2"
+                    Width="36"
+                    Height="36"
+                    Margin="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    RenderOptions.BitmapScalingMode="HighQuality"
+                    RenderTransformOrigin="0.5,0.5"
+                    SnapsToDevicePixels="True"
+                    Source="/Assets/bolt.png">
                     <Image.RenderTransform>
-                        <RotateTransform/>
+                        <RotateTransform />
                     </Image.RenderTransform>
                     <Image.Triggers>
                         <EventTrigger RoutedEvent="Image.Loaded">
                             <BeginStoryboard>
                                 <Storyboard RepeatBehavior="Forever">
-                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Angle"
-                                             From="360" To="0" Duration="0:0:22" />
+                                    <DoubleAnimation
+                                        Storyboard.TargetProperty="RenderTransform.Angle"
+                                        From="360"
+                                        To="0"
+                                        Duration="0:0:22" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
                     </Image.Triggers>
                 </Image>
-
-                <!-- 🔩 Bottom Left -->
-                <Image Source="/Assets/bolt.png"
-               Width="32" Height="32"
-               HorizontalAlignment="Left" VerticalAlignment="Bottom"
-               Margin="2" Grid.Column="0"
-               RenderTransformOrigin="0.5,0.5"
-               SnapsToDevicePixels="True"
-               RenderOptions.BitmapScalingMode="HighQuality">
+                <!--  🔩 Bottom Left  -->
+                <Image
+                    Grid.Column="0"
+                    Width="36"
+                    Height="36"
+                    Margin="2"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    RenderOptions.BitmapScalingMode="HighQuality"
+                    RenderTransformOrigin="0.5,0.5"
+                    SnapsToDevicePixels="True"
+                    Source="/Assets/bolt.png">
                     <Image.RenderTransform>
-                        <RotateTransform/>
+                        <RotateTransform />
                     </Image.RenderTransform>
                     <Image.Triggers>
                         <EventTrigger RoutedEvent="Image.Loaded">
                             <BeginStoryboard>
                                 <Storyboard RepeatBehavior="Forever">
-                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Angle"
-                                             From="0" To="360" Duration="0:0:21" />
+                                    <DoubleAnimation
+                                        Storyboard.TargetProperty="RenderTransform.Angle"
+                                        From="0"
+                                        To="360"
+                                        Duration="0:0:21" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
                     </Image.Triggers>
                 </Image>
-
-                <!-- 🔩 Bottom Right -->
-                <Image Source="/Assets/bolt.png"
-               Width="32" Height="32"
-               HorizontalAlignment="Right" VerticalAlignment="Bottom"
-               Margin="2" Grid.Column="2"
-               RenderTransformOrigin="0.5,0.5"
-               SnapsToDevicePixels="True"
-               RenderOptions.BitmapScalingMode="HighQuality">
+                <!--  🔩 Bottom Right  -->
+                <Image
+                    Grid.Column="2"
+                    Width="36"
+                    Height="36"
+                    Margin="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    RenderOptions.BitmapScalingMode="HighQuality"
+                    RenderTransformOrigin="0.5,0.5"
+                    SnapsToDevicePixels="True"
+                    Source="/Assets/bolt.png">
                     <Image.RenderTransform>
-                        <RotateTransform/>
+                        <RotateTransform />
                     </Image.RenderTransform>
                     <Image.Triggers>
                         <EventTrigger RoutedEvent="Image.Loaded">
                             <BeginStoryboard>
                                 <Storyboard RepeatBehavior="Forever">
-                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Angle"
-                                             From="360" To="0" Duration="0:0:23" />
+                                    <DoubleAnimation
+                                        Storyboard.TargetProperty="RenderTransform.Angle"
+                                        From="360"
+                                        To="0"
+                                        Duration="0:0:23" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
                     </Image.Triggers>
                 </Image>
-
-                <!-- 🎛️ Center Toolbar -->
-                <StackPanel Orientation="Horizontal"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
+                <materialDesign:Card
                     Grid.Column="1"
-                    Margin="0">
-                    <Button Style="{StaticResource RustButtonStyle}" Content="{materialDesign:PackIcon Plus}" Command="{Binding NewCommand}" Margin="4"/>
-                    <Button Style="{StaticResource RustButtonStyle}" Content="{materialDesign:PackIcon Play}" Command="{Binding StartCommand}" Margin="4"/>
-                    <Button Style="{StaticResource RustButtonStyle}" Content="{materialDesign:PackIcon Stop}" Command="{Binding StopCommand}" Margin="4"/>
-                    <Button Style="{StaticResource RustButtonStyle}" Content="{materialDesign:PackIcon Restart}" Margin="4"/>
-                    <Button Style="{StaticResource RustButtonStyle}" Content="{materialDesign:PackIcon Pencil}" Command="{Binding EditCommand}" Margin="4"/>
-                    <Button Style="{StaticResource RustButtonStyle}" Content="{materialDesign:PackIcon Trash}" Command="{Binding DeleteCommand}" Margin="4"/>
-                    <Button Style="{StaticResource RustButtonStyle}" Content="{materialDesign:PackIcon Kind=ConsoleNetwork}"
-                    ToolTip="Connect to Console"
-                    Command="{Binding ConnectToConsoleCommand}" Margin="4"/>
-                    <Button Style="{StaticResource RustButtonStyle}" Content="{materialDesign:PackIcon ArrowBack}" Command="{Binding BackInstanceCommand}" Margin="4"/>
-                    <Button Style="{StaticResource RustButtonStyle}" Content="{materialDesign:PackIcon ArrowForward}" Command="{Binding NextInstanceCommand}" Margin="4"/>
-                </StackPanel>
+                    Margin="0,20,0,20"
+                    Padding="10"
+                    materialDesign:ElevationAssist.Elevation="Dp3"
+                    materialDesign:UniformCornerRadius="10"
+                    Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
+                    <!--  🎛️ Center Toolbar  -->
+                    <StackPanel
+                        Grid.Column="1"
+                        Margin="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Button
+                            Margin="4"
+                            Command="{Binding NewCommand}"
+                            Content="{materialDesign:PackIcon Plus}"
+                            Style="{StaticResource RustButtonStyle}" />
+                        <Button
+                            Margin="4"
+                            Command="{Binding StartCommand}"
+                            Content="{materialDesign:PackIcon Play}"
+                            Style="{StaticResource RustButtonStyle}" />
+                        <Button
+                            Margin="4"
+                            Command="{Binding StopCommand}"
+                            Content="{materialDesign:PackIcon Stop}"
+                            Style="{StaticResource RustButtonStyle}" />
+                        <Button
+                            Margin="4"
+                            Content="{materialDesign:PackIcon Restart}"
+                            Style="{StaticResource RustButtonStyle}" />
+                        <Button
+                            Margin="4"
+                            Command="{Binding EditCommand}"
+                            Content="{materialDesign:PackIcon Pencil}"
+                            Style="{StaticResource RustButtonStyle}" />
+                        <Button
+                            Margin="4"
+                            Command="{Binding DeleteCommand}"
+                            Content="{materialDesign:PackIcon Trash}"
+                            Style="{StaticResource RustButtonStyle}" />
+                        <Button
+                            Margin="4"
+                            Command="{Binding ConnectToConsoleCommand}"
+                            Content="{materialDesign:PackIcon Kind=ConsoleNetwork}"
+                            Style="{StaticResource RustButtonStyle}"
+                            ToolTip="Connect to Console" />
+                        <Button
+                            Margin="4"
+                            Command="{Binding BackInstanceCommand}"
+                            Content="{materialDesign:PackIcon ArrowBack}"
+                            Style="{StaticResource RustButtonStyle}" />
+                        <Button
+                            Margin="4"
+                            Command="{Binding NextInstanceCommand}"
+                            Content="{materialDesign:PackIcon ArrowForward}"
+                            Style="{StaticResource RustButtonStyle}" />
+                    </StackPanel>
+                </materialDesign:Card>
             </Grid>
         </materialDesign:Card>
-        <!-- Card around DataGrid -->
-        <ContentControl Padding="5" Grid.Row="1" Content="{Binding SelectedPage}" 
-                HorizontalAlignment="Stretch" 
-                VerticalAlignment="Stretch"/>
+        <!--  Card around DataGrid  -->
+        <ContentControl
+            Grid.Row="1"
+            Padding="5"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Content="{Binding SelectedPage}" />
     </Grid>
 </UserControl>
