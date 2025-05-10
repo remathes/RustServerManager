@@ -49,7 +49,7 @@ A free and open-source desktop tool to monitor, manage, and control Rust servers
 - 🔄 Remote control panel for web access
 - 🌍 Live Rust map viewer
 - 🎯 Plugin sandbox deployment
-- 🔔 Discord or RingCentral alerts
+- 🔔 Discord alerts
 - 🔒 Secure credentials encryption
 
 ---
