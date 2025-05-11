@@ -35,7 +35,7 @@ namespace RustServerManager.ViewModels
         public bool IsStartDialogOpen { get; set; }
 
         [ObservableProperty]
-        private RustInstanceGridItemViewModel? selectedInstance;
+        private RustInstanceGridItemViewModel selectedInstance;
 
         public UserControl SelectedPage => SelectedInstance?.CurrentPage;
 
@@ -107,6 +107,11 @@ namespace RustServerManager.ViewModels
                     ProcessId = reader.IsDBNull(reader.GetOrdinal("ProcessId"))
                         ? 0
                         : reader.GetInt32(reader.GetOrdinal("ProcessId")),
+
+                    // ✅ NEW FIELDS
+                    EnableGracefulShutdown = Convert.ToBoolean(reader["EnableGracefulShutdown"]),
+                    ShutdownDelaySeconds = Convert.ToInt32(reader["ShutdownDelaySeconds"]),
+                    ShutdownMessageCommand = reader["ShutdownMessageCommand"].ToString()
                 };
 
                 Instances.Add(new RustInstanceGridItemViewModel(instance));
@@ -280,10 +285,14 @@ namespace RustServerManager.ViewModels
                 if (_myLaunchedProcess != null)
                 {
                     selected.Instance.ProcessId = _myLaunchedProcess.Id;
-
-                    // Optional: Save updated ProcessId to database
-
                     await Task.Delay(3000); // Short delay for process to stabilize
+
+                    //Start Monitor
+                    if (SelectedInstance.cts.Token.CanBeCanceled)
+                    {
+                        SelectedInstance.cts.Cancel();
+                        SelectedInstance.StartMetricsUpdate(SelectedInstance.Instance);
+                    }
 
                     // 🛠 NOW launch your custom RustServerConsoleWindow
                     var consoleWindow = new RustServerConsoleWindow(
@@ -310,23 +319,47 @@ namespace RustServerManager.ViewModels
 
             try
             {
-                // Try RCON first
                 if (_rconClient == null)
                     _rconClient = new RconClient(selected.Instance.Identity);
+
                 bool connected = await _rconClient.EnsureConnectedAsync(
                     selected.Instance.RconIp,
                     (ushort)selected.Instance.RconPort,
                     selected.Instance.RconPassword
                 );
 
+                if (connected && selected.Instance.EnableGracefulShutdown)
+                {
+                    int delay = selected.Instance.ShutdownDelaySeconds;
+                    int interval = 10;
+
+                    for (int remaining = delay; remaining > 0; remaining -= interval)
+                    {
+                        string message = selected.Instance.ShutdownMessageCommand
+                            ?.Replace("{seconds}", remaining.ToString())
+                            ?? $"say Server shutting down in {remaining} seconds";
+
+                        _ = _rconClient.SendCommandAsync(message); // fire-and-forget
+                        await Task.Delay(interval * 1000);         // keep real-time delay
+                    }
+
+                    _ = _rconClient.SendCommandAsync("say Server shutting down now...");
+                    await Task.Delay(1000);
+                }
+
                 if (connected)
                 {
                     await _rconClient.SendCommandAsync("quit");
-                    _rconClient.Disconnect();
+                    await Task.Delay(1000); // allow time to shut down
+                    System.Diagnostics.Debug.WriteLine("[StopInstance] Sent 'quit' via RCON.");
+                    if (SelectedInstance.cts.Token.CanBeCanceled)
+                    {
+                        SelectedInstance.StopMetricsUpdate();
+                    }
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("[StopInstance] Could not connect RCON, fallback to process kill.");
+                    System.Diagnostics.Debug.WriteLine("[StopInstance] Could not connect via RCON. Falling back to process kill.");
                     await FallbackKillProcess(selected);
                 }
             }
@@ -337,14 +370,196 @@ namespace RustServerManager.ViewModels
             }
             finally
             {
-                _rconClient.Reset();
+                if (_rconClient != null && !_rconClient.IsConnected)
+                    _rconClient.Reset();
+
+                selected.Instance.ProcessId = 0;
+                System.Diagnostics.Debug.WriteLine("Server stopped successfully.");
             }
-
-            // Clear the ProcessId
-            selected.Instance.ProcessId = 0;
-
-            System.Diagnostics.Debug.WriteLine("Server stopped successfully.");
         }
+
+        //private async Task StopInstance()
+        //{
+        //    if (SelectedInstance is not RustInstanceGridItemViewModel selected)
+        //        return;
+
+        //    try
+        //    {
+        //        // Initialize RCON client if needed
+        //        if (_rconClient == null)
+        //            _rconClient = new RconClient(selected.Instance.Identity);
+
+        //        bool connected = await _rconClient.EnsureConnectedAsync(
+        //            selected.Instance.RconIp,
+        //            (ushort)selected.Instance.RconPort,
+        //            selected.Instance.RconPassword
+        //        );
+
+        //        if (connected)
+        //        {
+        //            if (selected.Instance.EnableGracefulShutdown)
+        //            {
+        //                int delay = selected.Instance.ShutdownDelaySeconds;
+        //                int interval = 10;
+
+        //                for (int remaining = delay; remaining > 0; remaining -= interval)
+        //                {
+        //                    string message = selected.Instance.ShutdownMessageCommand
+        //                        ?.Replace("{seconds}", remaining.ToString())
+        //                        ?? $"say Server shutting down in {remaining} seconds";
+
+        //                    await _rconClient.SendCommandAsync(message);
+        //                    await Task.Delay(interval * 1000);
+        //                }
+
+        //                await _rconClient.SendCommandAsync("say Server shutting down now...");
+        //                await Task.Delay(2000);
+        //            }
+
+        //            await _rconClient.SendCommandAsync("quit");
+
+        //            // Give Rust server time to shut down
+        //            await Task.Delay(1000);
+
+        //            System.Diagnostics.Debug.WriteLine("[StopInstance] Sent 'quit' via RCON.");
+        //        }
+        //        else
+        //        {
+        //            System.Diagnostics.Debug.WriteLine("[StopInstance] Could not connect via RCON. Falling back to process kill.");
+        //            await FallbackKillProcess(selected);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine($"[StopInstance] Error using RCON: {ex.Message}");
+        //        await FallbackKillProcess(selected);
+        //    }
+        //    finally
+        //    {
+        //        if (_rconClient != null && !_rconClient.IsConnected)
+        //            _rconClient.Reset();
+
+        //        selected.Instance.ProcessId = 0;
+        //        System.Diagnostics.Debug.WriteLine("Server stopped successfully.");
+        //    }
+        //}
+
+        //private async Task StopInstance()
+        //{
+        //    if (SelectedInstance is not RustInstanceGridItemViewModel selected)
+        //        return;
+
+        //    try
+        //    {
+        //        // Initialize RCON client if needed
+        //        if (_rconClient == null)
+        //            _rconClient = new RconClient(selected.Instance.Identity);
+
+        //        bool connected = await _rconClient.EnsureConnectedAsync(
+        //            selected.Instance.RconIp,
+        //            (ushort)selected.Instance.RconPort,
+        //            selected.Instance.RconPassword
+        //        );
+
+        //        if (connected)
+        //        {
+        //            if (selected.Instance.EnableGracefulShutdown)
+        //            {
+        //                int delay = selected.Instance.ShutdownDelaySeconds;
+        //                int interval = 10;
+
+        //                for (int remaining = delay; remaining > 0; remaining -= interval)
+        //                {
+        //                    string message = selected.Instance.ShutdownMessageCommand
+        //                        ?.Replace("{seconds}", remaining.ToString())
+        //                        ?? $"say Server shutting down in {remaining} seconds";
+
+        //                    await _rconClient.SendCommandAsync(message);
+        //                    await Task.Delay(interval * 1000);
+        //                }
+
+        //                // Final message
+        //                await _rconClient.SendCommandAsync("say Server shutting down now...");
+        //                await Task.Delay(2000); // Optional pause before quit
+        //            }
+        //        }
+
+        //        if (connected)
+        //        {
+        //            await _rconClient.SendCommandAsync("quit");
+
+        //            // Give Rust server time to shut down gracefully
+        //            await Task.Delay(1000);
+
+        //            System.Diagnostics.Debug.WriteLine("[StopInstance] Sent 'quit' via RCON.");
+        //        }
+        //        else
+        //        {
+        //            System.Diagnostics.Debug.WriteLine("[StopInstance] Could not connect via RCON. Falling back to process kill.");
+        //            await FallbackKillProcess(selected);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine($"[StopInstance] Error using RCON: {ex.Message}");
+        //        await FallbackKillProcess(selected);
+        //    }
+        //    finally
+        //    {
+        //        // Only clean up the RCON client if the server has closed the connection
+        //        if (_rconClient != null && !_rconClient.IsConnected)
+        //        {
+        //            _rconClient.Reset();
+        //        }
+
+        //        selected.Instance.ProcessId = 0;
+
+        //        System.Diagnostics.Debug.WriteLine("Server stopped successfully.");
+        //    }
+        //}
+
+        //private async Task StopInstance()
+        //{
+        //    if (SelectedInstance is not RustInstanceGridItemViewModel selected)
+        //        return;
+
+        //    try
+        //    {
+        //        // Try RCON first
+        //        if (_rconClient == null)
+        //            _rconClient = new RconClient(selected.Instance.Identity);
+        //        bool connected = await _rconClient.EnsureConnectedAsync(
+        //            selected.Instance.RconIp,
+        //            (ushort)selected.Instance.RconPort,
+        //            selected.Instance.RconPassword
+        //        );
+
+        //        if (connected)
+        //        {
+        //            await _rconClient.SendCommandAsync("quit");
+        //            _rconClient.Disconnect();
+        //        }
+        //        else
+        //        {
+        //            System.Diagnostics.Debug.WriteLine("[StopInstance] Could not connect RCON, fallback to process kill.");
+        //            await FallbackKillProcess(selected);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine($"[StopInstance] Error using RCON: {ex.Message}");
+        //        await FallbackKillProcess(selected);
+        //    }
+        //    finally
+        //    {
+        //        _rconClient.Reset();
+        //    }
+
+        //    // Clear the ProcessId
+        //    selected.Instance.ProcessId = 0;
+
+        //    System.Diagnostics.Debug.WriteLine("Server stopped successfully.");
+        //}
 
         private async Task FallbackKillProcess(RustInstanceGridItemViewModel selected)
         {
@@ -384,20 +599,23 @@ namespace RustServerManager.ViewModels
                     await conn.OpenAsync();
 
                     using var cmd = new MySqlCommand(@"INSERT INTO Instances (
-        Identity, Description, ServerHostname, ServerUrl, ServerIp, ServerPort,
-        RconIp, RconPort, AppPort, RconPassword, RconWeb, MaxPlayers,
-        ServerTickrate, ServerSaveInterval, UseCustomMap, Seed, WorldSize,
-        Level, MapName, ServerLevelUrl, SteamCmdPath, InstallDirectory,
-        RustDedicatedProcess, ServerCfg, MySqlHost, MySqlPort, MySqlUsername,
-        MySqlPassword, MySqlDatabaseName, AutoStart, AutoUpdate, LastWiped, ProcessId)
-        VALUES (
-        @Identity, @Description, @ServerHostname, @ServerUrl, @ServerIp, @ServerPort,
-        @RconIp, @RconPort, @AppPort, @RconPassword, @RconWeb, @MaxPlayers,
-        @ServerTickrate, @ServerSaveInterval, @UseCustomMap, @Seed, @WorldSize,
-        @Level, @MapName, @ServerLevelUrl, @SteamCmdPath, @InstallDirectory,
-        @RustDedicatedProcess, @ServerCfg, @MySqlHost, @MySqlPort, @MySqlUsername,
-        @MySqlPassword, @MySqlDatabaseName, @AutoStart, @AutoUpdate, @LastWiped, @ProcessId);", conn);
+                    Identity, Description, ServerHostname, ServerUrl, ServerIp, ServerPort,
+                    RconIp, RconPort, AppPort, RconPassword, RconWeb, MaxPlayers,
+                    ServerTickrate, ServerSaveInterval, UseCustomMap, Seed, WorldSize,
+                    Level, MapName, ServerLevelUrl, SteamCmdPath, InstallDirectory,
+                    RustDedicatedProcess, ServerCfg, MySqlHost, MySqlPort, MySqlUsername,
+                    MySqlPassword, MySqlDatabaseName, AutoStart, AutoUpdate, LastWiped, ProcessId,
+                    EnableGracefulShutdown, ShutdownDelaySeconds, ShutdownMessageCommand)
+                    VALUES (
+                    @Identity, @Description, @ServerHostname, @ServerUrl, @ServerIp, @ServerPort,
+                    @RconIp, @RconPort, @AppPort, @RconPassword, @RconWeb, @MaxPlayers,
+                    @ServerTickrate, @ServerSaveInterval, @UseCustomMap, @Seed, @WorldSize,
+                    @Level, @MapName, @ServerLevelUrl, @SteamCmdPath, @InstallDirectory,
+                    @RustDedicatedProcess, @ServerCfg, @MySqlHost, @MySqlPort, @MySqlUsername,
+                    @MySqlPassword, @MySqlDatabaseName, @AutoStart, @AutoUpdate, @LastWiped, @ProcessId,
+                    @EnableGracefulShutdown, @ShutdownDelaySeconds, @ShutdownMessageCommand);", conn);
 
+                    // Parameters
                     cmd.Parameters.AddWithValue("@Identity", newInstance.Identity);
                     cmd.Parameters.AddWithValue("@Description", newInstance.Description);
                     cmd.Parameters.AddWithValue("@ServerHostname", newInstance.ServerHostname);
@@ -431,6 +649,9 @@ namespace RustServerManager.ViewModels
                     cmd.Parameters.AddWithValue("@AutoUpdate", newInstance.AutoUpdate);
                     cmd.Parameters.AddWithValue("@LastWiped", newInstance.LastWiped == DateTime.MinValue ? DBNull.Value : (object)newInstance.LastWiped);
                     cmd.Parameters.AddWithValue("@ProcessId", newInstance.ProcessId);
+                    cmd.Parameters.AddWithValue("@EnableGracefulShutdown", newInstance.EnableGracefulShutdown);
+                    cmd.Parameters.AddWithValue("@ShutdownDelaySeconds", newInstance.ShutdownDelaySeconds);
+                    cmd.Parameters.AddWithValue("@ShutdownMessageCommand", newInstance.ShutdownMessageCommand ?? (object)DBNull.Value);
 
                     await cmd.ExecuteNonQueryAsync();
 
@@ -495,7 +716,10 @@ namespace RustServerManager.ViewModels
                     MySqlPassword = @MySqlPassword,
                     MySqlDatabaseName = @MySqlDatabaseName,
                     AutoStart = @AutoStart,
-                    AutoUpdate = @AutoUpdate
+                    AutoUpdate = @AutoUpdate,
+                    EnableGracefulShutdown = @EnableGracefulShutdown,
+                    ShutdownDelaySeconds = @ShutdownDelaySeconds,
+                    ShutdownMessageCommand = @ShutdownMessageCommand
                 WHERE Identity = @Identity;
             ", conn);
 
@@ -531,6 +755,9 @@ namespace RustServerManager.ViewModels
                     cmd.Parameters.AddWithValue("@MySqlDatabaseName", i.MySqlDatabaseName);
                     cmd.Parameters.AddWithValue("@AutoStart", i.AutoStart);
                     cmd.Parameters.AddWithValue("@AutoUpdate", i.AutoUpdate);
+                    cmd.Parameters.AddWithValue("@EnableGracefulShutdown", i.EnableGracefulShutdown);
+                    cmd.Parameters.AddWithValue("@ShutdownDelaySeconds", i.ShutdownDelaySeconds);
+                    cmd.Parameters.AddWithValue("@ShutdownMessageCommand", i.ShutdownMessageCommand ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Identity", i.Identity);
 
                     await cmd.ExecuteNonQueryAsync();

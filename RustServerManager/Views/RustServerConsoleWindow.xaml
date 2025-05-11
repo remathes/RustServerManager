@@ -1,34 +1,38 @@
-﻿<Window x:Class="RustServerManager.Views.RustServerConsoleWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        mc:Ignorable="d"
-        Title="Rust Server Console"
-        Background="{DynamicResource MaterialDesignPaper}"
-        WindowStartupLocation="CenterScreen"
-        Loaded="Window_Loaded"
-        Height="400"
-        Width="820"
-        Closing="Window_Closing">
+﻿<Window
+    x:Class="RustServerManager.Views.RustServerConsoleWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Rust Server Console"
+    Width="820"
+    Height="400"
+    Background="{DynamicResource MaterialDesignPaper}"
+    Closing="Window_Closing"
+    Loaded="Window_Loaded"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
     <Window.Resources>
-        <Storyboard x:Key="PulseStoryboard" RepeatBehavior="Forever" AutoReverse="True">
+        <Storyboard
+            x:Key="PulseStoryboard"
+            AutoReverse="True"
+            RepeatBehavior="Forever">
             <DoubleAnimation
-        Storyboard.TargetName="ConnectionIndicator"
-        Storyboard.TargetProperty="Opacity"
-        From="1.0"
-        To="0.3"
-        Duration="0:0:1" />
+                Storyboard.TargetName="ConnectionIndicator"
+                Storyboard.TargetProperty="Opacity"
+                From="1.0"
+                To="0.3"
+                Duration="0:0:1" />
         </Storyboard>
 
         <Storyboard x:Key="StopPulseStoryboard">
             <DoubleAnimation
-        Storyboard.TargetName="ConnectionIndicator"
-        Storyboard.TargetProperty="Opacity"
-        To="1.0"
-        Duration="0:0:0.2" />
+                Storyboard.TargetName="ConnectionIndicator"
+                Storyboard.TargetProperty="Opacity"
+                To="1.0"
+                Duration="0:0:0.2" />
         </Storyboard>
     </Window.Resources>
     <Grid>
@@ -36,58 +40,74 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid Margin="10" Grid.Row="0">
+        <Grid Grid.Row="0" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <!-- Console and Snippets -->
+                <!--  Console and Snippets  -->
                 <RowDefinition Height="Auto" />
-                <!-- Buttons -->
+                <!--  Buttons  -->
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <!-- Snippets -->
+                <!--  Snippets  -->
                 <ColumnDefinition Width="5" />
-                <ColumnDefinition MinWidth="125" Width="125" MaxWidth="800" />
-                <!-- Console -->
+                <ColumnDefinition
+                    Width="125"
+                    MinWidth="125"
+                    MaxWidth="800" />
+                <!--  Console  -->
             </Grid.ColumnDefinitions>
 
-            <!-- Snippets List -->
-            <Border Grid.Row="0" Grid.Column="2"
+            <!--  Snippets List  -->
+            <Border
+                Grid.Row="0"
+                Grid.Column="2"
+                Margin="0,0,10,0"
                 Background="{DynamicResource MaterialDesignPaper}"
                 BorderBrush="{DynamicResource MaterialDesignDivider}"
                 BorderThickness="1"
-                CornerRadius="8"
-                Margin="0,0,10,0">
-                <ListBox x:Name="SnippetsListBox"
-                     Margin="5"
-                     MinWidth="125"
-                         MaxWidth="800"
-                     SelectionMode="Single"
-                     MouseDoubleClick="SnippetsListBox_MouseDoubleClick"
+                CornerRadius="8">
+                <ListBox
+                    x:Name="SnippetsListBox"
+                    MinWidth="125"
+                    MaxWidth="800"
+                    Margin="5"
                     Background="Black"
                     Foreground="White"
-                     Style="{StaticResource MaterialDesignListBox}" />
+                    MouseDoubleClick="SnippetsListBox_MouseDoubleClick"
+                    SelectionMode="Single"
+                    Style="{StaticResource MaterialDesignListBox}" />
             </Border>
-            <GridSplitter Grid.Column="1" Grid.Row="0" ShowsPreview="True" Width="5" Background="Blue" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" />
-            <!-- Console Log Editor -->
-            <Border Grid.Row="0" Grid.Column="0"
-        Background="{DynamicResource MaterialDesignPaper}"
-        BorderBrush="{DynamicResource MaterialDesignDivider}"
-        BorderThickness="1"
-        CornerRadius="8">
-                <RichTextBox x:Name="ServerLogBox"
-                 IsReadOnly="True"
-                Background="Black"
-                Foreground="White"
-                 BorderThickness="0"
-                 FontFamily="Consolas"
-                 FontSize="13"
-                 VerticalScrollBarVisibility="Auto"
-                 HorizontalScrollBarVisibility="Auto"
-                 Margin="0"/>
+            <GridSplitter
+                Grid.Row="0"
+                Grid.Column="1"
+                Width="5"
+                Background="Blue"
+                ResizeBehavior="PreviousAndNext"
+                ResizeDirection="Columns"
+                ShowsPreview="True" />
+            <!--  Console Log Editor  -->
+            <Border
+                Grid.Row="0"
+                Grid.Column="0"
+                Background="{DynamicResource MaterialDesignPaper}"
+                BorderBrush="{DynamicResource MaterialDesignDivider}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <RichTextBox
+                    x:Name="ServerLogBox"
+                    Margin="0"
+                    Background="Black"
+                    BorderThickness="0"
+                    FontFamily="Consolas"
+                    FontSize="13"
+                    Foreground="White"
+                    HorizontalScrollBarVisibility="Auto"
+                    IsReadOnly="True"
+                    VerticalScrollBarVisibility="Auto" />
             </Border>
         </Grid>
-        <!-- Bottom Command Input and Buttons -->
+        <!--  Bottom Command Input and Buttons  -->
         <Grid Grid.Row="1" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -95,47 +115,72 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <!-- Top Status Bar -->
-            <Ellipse HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="ConnectionIndicator"
-        Width="18"
-        Height="18"
-        Fill="{DynamicResource MaterialDesignValidationErrorBrush}"
-        Margin="5" />
-            <TextBlock Margin="5" Grid.Column="1" x:Name="ConnectionStatusText"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Left"
-                       FontWeight="Bold"
-                       Foreground="{DynamicResource MaterialDesignBody}"
-                       Text="Waiting to connect to server..." />
-            <avalonEdit:TextEditor
+            <!--  Top Status Bar  -->
+            <Ellipse
+                x:Name="ConnectionIndicator"
+                Width="18"
+                Height="18"
                 Margin="5"
-        Width="300"
-        x:Name="CommandInputEditor"
-        Grid.Column="2"
-        FontFamily="Consolas"
-        FontSize="14"
-        Background="{DynamicResource MaterialDesignPaper}"
-        Foreground="{DynamicResource MaterialDesignBody}"
-        ShowLineNumbers="False"
-        HorizontalAlignment="Left"
-        VerticalAlignment="Center"
-        HorizontalScrollBarVisibility="Hidden"
-        VerticalScrollBarVisibility="Hidden"/>
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Fill="{DynamicResource MaterialDesignValidationErrorBrush}" />
+            <TextBlock
+                x:Name="ConnectionStatusText"
+                Grid.Column="1"
+                Margin="5"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontWeight="Bold"
+                Foreground="{DynamicResource MaterialDesignBody}"
+                Text="Waiting to connect to server..." />
+            <avalonEdit:TextEditor
+                x:Name="CommandInputEditor"
+                Grid.Column="2"
+                Width="300"
+                Margin="5"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Background="{DynamicResource MaterialDesignPaper}"
+                FontFamily="Consolas"
+                FontSize="14"
+                Foreground="{DynamicResource MaterialDesignBody}"
+                HorizontalScrollBarVisibility="Hidden"
+                ShowLineNumbers="False"
+                VerticalScrollBarVisibility="Hidden" />
 
-            <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Margin="5" Grid.Column="2"  Content="Send"
-            Click="SendCommand_Click" VerticalAlignment="Center"  HorizontalAlignment="Right" />
-                <Button Margin="5" Grid.Column="3" Content="Clear"
-            Click="ClearConsole_Click" VerticalAlignment="Center" HorizontalAlignment="Right" />
-                <StackPanel Orientation="Horizontal" Margin="8">
-                    <TextBlock Text="Watch Log" VerticalAlignment="Center" FontSize="12" FontWeight="Bold" Margin="0,0,8,0"/>
-                    <ToggleButton x:Name="WatchLog"
-                                  IsEnabled="False"
-                                    Checked="ToggleButton_Checked"
-                                  Unchecked="ToggleButton_Unchecked"
-                                      Width="48"
-                                      Background="{DynamicResource MaterialDesignPaper}"
-                                      Style="{StaticResource MaterialDesignSwitchToggleButton}" />
+            <StackPanel
+                Grid.Column="3"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    Grid.Column="2"
+                    Margin="5"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Click="SendCommand_Click"
+                    Content="Send" />
+                <Button
+                    Grid.Column="3"
+                    Margin="5"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Click="ClearConsole_Click"
+                    Content="Clear" />
+                <StackPanel Margin="8" Orientation="Horizontal">
+                    <TextBlock
+                        Margin="0,0,8,0"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Text="Watch Log" />
+                    <ToggleButton
+                        x:Name="WatchLog"
+                        Width="48"
+                        Background="{DynamicResource MaterialDesignPaper}"
+                        Checked="ToggleButton_Checked"
+                        IsEnabled="False"
+                        Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                        Unchecked="ToggleButton_Unchecked" />
                 </StackPanel>
             </StackPanel>
         </Grid>

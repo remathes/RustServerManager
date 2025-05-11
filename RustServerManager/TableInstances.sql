@@ -1,4 +1,4 @@
-CREATE TABLE `instances` (
+instances	CREATE TABLE `instances` (
   `Identity` varchar(100) NOT NULL,
   `Description` text,
   `ServerHostname` varchar(100) DEFAULT NULL,
@@ -32,5 +32,8 @@ CREATE TABLE `instances` (
   `AutoUpdate` tinyint(1) DEFAULT '0',
   `LastWiped` date DEFAULT NULL,
   `ProcessId` int DEFAULT NULL,
+  `EnableGracefulShutdown` tinyint(1) DEFAULT '0',
+  `ShutdownDelaySeconds` int DEFAULT '30',
+  `ShutdownMessageCommand` varchar(255) DEFAULT 'say Server shutting down in {seconds} seconds',
   PRIMARY KEY (`Identity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci

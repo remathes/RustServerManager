@@ -259,6 +259,46 @@ namespace RustServerManager.ViewModels
             }
         }
 
+        private bool _enableGracefulShutdown;
+        public bool EnableGracefulShutdown
+        {
+            get => _enableGracefulShutdown;
+            set
+            {
+                if (_enableGracefulShutdown != value)
+                {
+                    _enableGracefulShutdown = value;
+                    OnPropertyChanged(nameof(EnableGracefulShutdown));
+                }
+            }
+        }
+        private int _shutdownDelaySeconds = 30;
+        public int ShutdownDelaySeconds
+        {
+            get => _shutdownDelaySeconds;
+            set
+            {
+                if (_shutdownDelaySeconds != value)
+                {
+                    _shutdownDelaySeconds = value;
+                    OnPropertyChanged(nameof(ShutdownDelaySeconds));
+                }
+            }
+        }
+        private string _shutdownMessageCommand = "say Server shutting down in {seconds} seconds";
+        public string ShutdownMessageCommand
+        {
+            get => _shutdownMessageCommand;
+            set
+            {
+                if (_shutdownMessageCommand != value)
+                {
+                    _shutdownMessageCommand = value;
+                    OnPropertyChanged(nameof(ShutdownMessageCommand));
+                }
+            }
+        }
+
         public ICommand RunInstallCommand => new AsyncRelayCommand(async () =>
         {
             string mapFolder = Path.Combine(InstallDirectory, "server", Identity);
@@ -495,6 +535,9 @@ namespace RustServerManager.ViewModels
             MySqlDatabaseName = source.MySqlDatabaseName;
             AutoUpdate = source.AutoUpdate;
             AutoStart = source.AutoStart;
+            EnableGracefulShutdown = source.EnableGracefulShutdown;
+            ShutdownDelaySeconds = source.ShutdownDelaySeconds;
+            ShutdownMessageCommand = source.ShutdownMessageCommand;
         }
 
         public void ApplyTo(RustServerInstance target)
@@ -532,6 +575,9 @@ namespace RustServerManager.ViewModels
             target.MySqlDatabaseName = MySqlDatabaseName;
             target.AutoStart = AutoStart;
             target.AutoUpdate = AutoUpdate;
+            target.EnableGracefulShutdown = EnableGracefulShutdown;
+            target.ShutdownDelaySeconds = ShutdownDelaySeconds;
+            target.ShutdownMessageCommand = ShutdownMessageCommand;
         }
     }
 }

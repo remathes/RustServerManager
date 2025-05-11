@@ -106,135 +106,135 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid
-                    Grid.Row="0"
-                    Margin="10"
-                    Background="Transparent">
+                Grid.Row="0"
+                Margin="10"
+                Background="Transparent">
                 <!--  Outer glowing border  -->
                 <Border
-                        Padding="5"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Background="Transparent"
-                        CornerRadius="10"
-                        Effect="{StaticResource LavaGlow}">
+                    Padding="5"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="Transparent"
+                    CornerRadius="10"
+                    Effect="{StaticResource LavaGlow}">
 
                     <!--  Inner rusted panel  -->
                     <Border Background="{StaticResource RustPlateBrush}" CornerRadius="8">
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <Image
-                                    x:Name="BoltTopLeftTopPanel"
-                                    Width="36"
-                                    Height="36"
-                                    Margin="4"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    RenderOptions.BitmapScalingMode="HighQuality"
-                                    Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                                x:Name="BoltTopLeftTopPanel"
+                                Width="36"
+                                Height="36"
+                                Margin="4"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                RenderOptions.BitmapScalingMode="HighQuality"
+                                Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
                                 <Image.RenderTransform>
                                     <RotateTransform CenterX="18" CenterY="18" />
                                 </Image.RenderTransform>
                             </Image>
 
                             <Image
-                                    x:Name="BoltTopRightTopPanel"
-                                    Width="36"
-                                    Height="36"
-                                    Margin="4"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Top"
-                                    RenderOptions.BitmapScalingMode="HighQuality"
-                                    Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                                x:Name="BoltTopRightTopPanel"
+                                Width="36"
+                                Height="36"
+                                Margin="4"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                RenderOptions.BitmapScalingMode="HighQuality"
+                                Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
                                 <Image.RenderTransform>
                                     <RotateTransform CenterX="18" CenterY="18" />
                                 </Image.RenderTransform>
                             </Image>
 
                             <Image
-                                    x:Name="BoltBottomLeftTopPanel"
-                                    Width="36"
-                                    Height="36"
-                                    Margin="4"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Bottom"
-                                    RenderOptions.BitmapScalingMode="HighQuality"
-                                    Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                                x:Name="BoltBottomLeftTopPanel"
+                                Width="36"
+                                Height="36"
+                                Margin="4"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                RenderOptions.BitmapScalingMode="HighQuality"
+                                Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
                                 <Image.RenderTransform>
                                     <RotateTransform CenterX="18" CenterY="18" />
                                 </Image.RenderTransform>
                             </Image>
 
                             <Image
-                                    x:Name="BoltBottomRightTopPanel"
-                                    Width="36"
-                                    Height="36"
-                                    Margin="4"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Bottom"
-                                    RenderOptions.BitmapScalingMode="HighQuality"
-                                    Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                                x:Name="BoltBottomRightTopPanel"
+                                Width="36"
+                                Height="36"
+                                Margin="4"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                RenderOptions.BitmapScalingMode="HighQuality"
+                                Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
                                 <Image.RenderTransform>
                                     <RotateTransform CenterX="18" CenterY="18" />
                                 </Image.RenderTransform>
                             </Image>
                             <materialDesign:Card
-                                    x:Name="TopCard"
-                                    Margin="40"
-                                    materialDesign:ElevationAssist.Elevation="Dp3"
-                                    materialDesign:UniformCornerRadius="10"
-                                    Background="{StaticResource MaterialDesignDarkSeparatorBackground}"
-                                    Opacity="0.8">
+                                x:Name="TopCard"
+                                Margin="40"
+                                materialDesign:ElevationAssist.Elevation="Dp3"
+                                materialDesign:UniformCornerRadius="10"
+                                Background="Transparent"
+                                Opacity="0.8">
                                 <!--  🎛️ Center Toolbar  -->
                                 <StackPanel
-                                        Grid.Column="1"
-                                        Margin="0"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal">
+                                    Grid.Column="1"
+                                    Margin="0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
                                     <Button
-                                            Margin="4"
-                                            Command="{Binding NewCommand}"
-                                            Content="{materialDesign:PackIcon Plus}"
-                                            Style="{StaticResource RustButtonStyle}" />
+                                        Margin="4"
+                                        Command="{Binding NewCommand}"
+                                        Content="{materialDesign:PackIcon Plus}"
+                                        Style="{StaticResource RustButtonStyle}" />
                                     <Button
-                                            Margin="4"
-                                            Command="{Binding StartCommand}"
-                                            Content="{materialDesign:PackIcon Play}"
-                                            Style="{StaticResource RustButtonStyle}" />
+                                        Margin="4"
+                                        Command="{Binding StartCommand}"
+                                        Content="{materialDesign:PackIcon Play}"
+                                        Style="{StaticResource RustButtonStyle}" />
                                     <Button
-                                            Margin="4"
-                                            Command="{Binding StopCommand}"
-                                            Content="{materialDesign:PackIcon Stop}"
-                                            Style="{StaticResource RustButtonStyle}" />
+                                        Margin="4"
+                                        Command="{Binding StopCommand}"
+                                        Content="{materialDesign:PackIcon Stop}"
+                                        Style="{StaticResource RustButtonStyle}" />
                                     <Button
-                                            Margin="4"
-                                            Content="{materialDesign:PackIcon Restart}"
-                                            Style="{StaticResource RustButtonStyle}" />
+                                        Margin="4"
+                                        Content="{materialDesign:PackIcon Restart}"
+                                        Style="{StaticResource RustButtonStyle}" />
                                     <Button
-                                            Margin="4"
-                                            Command="{Binding EditCommand}"
-                                            Content="{materialDesign:PackIcon Pencil}"
-                                            Style="{StaticResource RustButtonStyle}" />
+                                        Margin="4"
+                                        Command="{Binding EditCommand}"
+                                        Content="{materialDesign:PackIcon Pencil}"
+                                        Style="{StaticResource RustButtonStyle}" />
                                     <Button
-                                            Margin="4"
-                                            Command="{Binding DeleteCommand}"
-                                            Content="{materialDesign:PackIcon Trash}"
-                                            Style="{StaticResource RustButtonStyle}" />
+                                        Margin="4"
+                                        Command="{Binding DeleteCommand}"
+                                        Content="{materialDesign:PackIcon Trash}"
+                                        Style="{StaticResource RustButtonStyle}" />
                                     <Button
-                                            Margin="4"
-                                            Command="{Binding ConnectToConsoleCommand}"
-                                            Content="{materialDesign:PackIcon Kind=ConsoleNetwork}"
-                                            Style="{StaticResource RustButtonStyle}"
-                                            ToolTip="Connect to Console" />
+                                        Margin="4"
+                                        Command="{Binding ConnectToConsoleCommand}"
+                                        Content="{materialDesign:PackIcon Kind=ConsoleNetwork}"
+                                        Style="{StaticResource RustButtonStyle}"
+                                        ToolTip="Connect to Console" />
                                     <Button
-                                            Margin="4"
-                                            Command="{Binding BackInstanceCommand}"
-                                            Content="{materialDesign:PackIcon ArrowBack}"
-                                            Style="{StaticResource RustButtonStyle}" />
+                                        Margin="4"
+                                        Command="{Binding BackInstanceCommand}"
+                                        Content="{materialDesign:PackIcon ArrowBack}"
+                                        Style="{StaticResource RustButtonStyle}" />
                                     <Button
-                                            Margin="4"
-                                            Command="{Binding NextInstanceCommand}"
-                                            Content="{materialDesign:PackIcon ArrowForward}"
-                                            Style="{StaticResource RustButtonStyle}" />
+                                        Margin="4"
+                                        Command="{Binding NextInstanceCommand}"
+                                        Content="{materialDesign:PackIcon ArrowForward}"
+                                        Style="{StaticResource RustButtonStyle}" />
                                 </StackPanel>
                             </materialDesign:Card>
                         </Grid>
@@ -243,11 +243,11 @@
             </Grid>
             <!--  Card around DataGrid  -->
             <ContentControl
-                    Grid.Row="1"
-                    Padding="5"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Content="{Binding SelectedPage}" />
+                Grid.Row="1"
+                Padding="5"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Content="{Binding SelectedPage}" />
         </Grid>
     </materialDesign:DialogHost>
 </Window>

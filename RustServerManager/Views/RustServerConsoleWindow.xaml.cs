@@ -53,7 +53,7 @@ namespace RustServerManager.Views
             _commandAutoCompleteProvider = new CommandAutoCompleteProvider(quickCommands);
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
             SnippetsListBox.Items.Clear();
@@ -62,7 +62,7 @@ namespace RustServerManager.Views
             CommandInputEditor.TextArea.TextEntering += TextArea_TextEntering;
             CommandInputEditor.TextArea.TextEntered += TextArea_TextEntered;
             CommandInputEditor.TextArea.TextEntered += CommandInputEditor_TextArea_TextEntered;
-            await TryConnectLoopAsync();
+            _ = TryConnectLoopAsync();
         }
 
         private void ToggleButton_Checked(object sender, RoutedEventArgs e)
@@ -127,38 +127,43 @@ namespace RustServerManager.Views
         }
         private async Task TryConnectLoopAsync()
         {
-            try
+            StartPulse();
+
+            _connectRetryCts?.Cancel(); // Cancel previous loop if any
+            _connectRetryCts = new CancellationTokenSource();
+            var token = _connectRetryCts.Token;
+
+            SetConnected(false);
+            WatchLog.IsEnabled = false;
+
+            while (!token.IsCancellationRequested)
             {
-                StartPulse();
-                _connectRetryCts?.Cancel();
-                _connectRetryCts = new CancellationTokenSource();
-                var token = _connectRetryCts.Token;
-                while (!token.IsCancellationRequested)
+                try
                 {
                     bool connected = await _rconClient.EnsureConnectedAsync(_hostname, (ushort)_rconPort, _rconPassword);
 
                     if (connected)
                     {
-                        WatchLog.IsEnabled = true;
                         StopPulse();
                         SetConnected(true);
-                        break; // ✅ Connected, stop looping
+                        WatchLog.IsEnabled = true;
+
+                        System.Diagnostics.Debug.WriteLine($"[RCON Terminal] Connected to {_hostname}:{_rconPort}");
+                        break; // ✅ Exit loop once connected
                     }
-                    else
-                    {
-                        WatchLog.IsEnabled = false;
-                        await Task.Delay(5000, token);
-                        await TryConnectLoopAsync();
-                    }
+
+                    System.Diagnostics.Debug.WriteLine("[RCON Terminal] Server not ready, retrying in 5s...");
+                    await Task.Delay(5000, token); // ⏳ Wait before retry
                 }
-            }
-            catch (TaskCanceledException)
-            {
-                // Optional: clean up or notify UI
-            }
-            catch (Exception ex)
-            {
-                // Optional: log or show UI error
+                catch (TaskCanceledException)
+                {
+                    break; // Graceful cancel
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[RCON Terminal] Error connecting: {ex.Message}");
+                    await Task.Delay(5000, token); // Wait again after error
+                }
             }
         }
 
@@ -265,29 +270,6 @@ namespace RustServerManager.Views
                 }
             }
         }
-
-        //private void ShowCompletion()
-        //{
-        //    _completionWindow = new CompletionWindow(CommandInputEditor.TextArea);
-        //    _completionWindow.Width = 300;
-
-        //    var data = _completionWindow.CompletionList.CompletionData;
-
-        //    string typedText = GetCurrentWord(CommandInputEditor)?.Trim() ?? string.Empty;
-
-        //    var filteredSnippets = _snippets
-        //        .Where(s => s.Command.Contains(typedText, StringComparison.OrdinalIgnoreCase))
-        //        .OrderBy(s => s.Command)
-        //        .ToList();
-
-        //    foreach (var snippet in filteredSnippets)
-        //    {
-        //        data.Add(new RustCommandCompletionData(snippet.Command, snippet.Description));
-        //    }
-
-        //    _completionWindow.Closed += (o, args) => _completionWindow = null;
-        //    _completionWindow.Show();
-        //}
 
         private string GetCurrentWord(ICSharpCode.AvalonEdit.TextEditor editor)
         {

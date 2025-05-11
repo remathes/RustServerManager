@@ -15,7 +15,7 @@ namespace RustServerManager.Utils
             _connectionString = DatabaseHelper.GetConnectionString();
         }
 
-        public async Task LogAsync(string logType, string errorType, string severity, string source, string message, string details)
+        public async Task LogAsync(string logType, string errorType, string severity, string source, string message, string details = null)
         {
             using var connection = new MySqlConnection(_connectionString);
             await connection.OpenAsync();

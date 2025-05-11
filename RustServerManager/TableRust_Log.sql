@@ -3,10 +3,10 @@ CREATE TABLE `rust_log` (
   `ServerIdentity` varchar(100) DEFAULT NULL,
   `LogType` varchar(50) DEFAULT NULL,
   `ErrorType` varchar(50) DEFAULT NULL,
-  `Severity` enum('Info','Warning','Error','Critical') DEFAULT NULL,
+  `Severity` varchar(20) DEFAULT NULL,
   `Source` varchar(100) DEFAULT NULL,
-  `Message` text,
-  `Details` text,
+  `Message` longtext,
+  `Details` longtext,
   `Timestamp` datetime DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=444 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=444 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

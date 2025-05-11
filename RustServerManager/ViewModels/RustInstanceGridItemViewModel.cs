@@ -400,7 +400,11 @@ namespace RustServerManager.ViewModels
         public string MySqlUserName => Instance.MySqlUsername;
         public string MySqlPassword => Instance.MySqlPassword;
         public string MySqlDatabaseName => Instance.MySqlDatabaseName;
-        
+        public bool EnableGracefulShutdown => Instance.EnableGracefulShutdown;
+        public int ShutdownDelaySeconds => Instance.ShutdownDelaySeconds;
+        public string ShutdownMessageCommand => Instance.ShutdownMessageCommand;
+
+
         private bool _autoStart;
         public bool AutoStart
         {
@@ -433,7 +437,22 @@ namespace RustServerManager.ViewModels
             }
         }
 
-        public int ProcessId => Instance.ProcessId;
+        private int _processId;
+        public int ProcessId
+        {
+            get => _processId;
+            set
+            {
+                if(_processId !=value)
+                {
+                    _processId = value;
+                    Instance.ProcessId = value;
+                    OnPropertyChanged();
+                    UpdateProcessIdInDatabase("ProcessId", value);
+                }
+            }
+        }
+
         private string _uptime = "--:--";
         public string Uptime
         {
@@ -502,6 +521,25 @@ namespace RustServerManager.ViewModels
         }
 
         private void UpdateToggleInDatabase(string column, bool value)
+        {
+            try
+            {
+                using var conn = new MySql.Data.MySqlClient.MySqlConnection(DatabaseHelper.GetConnectionString());
+                conn.Open();
+
+                string query = $"UPDATE Instances SET {column} = @value WHERE Identity = @identity";
+                using var cmd = new MySql.Data.MySqlClient.MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@value", value);
+                cmd.Parameters.AddWithValue("@identity", Instance.Identity);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to update {column}: {ex.Message}");
+            }
+        }
+
+        private void UpdateProcessIdInDatabase(string column, int value)
         {
             try
             {

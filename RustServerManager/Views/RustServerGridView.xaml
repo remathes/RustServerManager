@@ -91,7 +91,7 @@
         <Style x:Key="LavaCardStyle" TargetType="materialDesign:Card">
             <Setter Property="Effect" Value="{StaticResource LavaGlowEffect}" />
         </Style>
-        
+
         <!--  Toggle Button Style  -->
         <Style
             x:Key="RustToggleButtonStyle"

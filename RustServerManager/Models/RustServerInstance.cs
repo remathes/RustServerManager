@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using RustServerManager.Models;
 using System;
 
@@ -39,4 +40,7 @@ public class RustServerInstance
     public string MySqlDatabaseName { get; set; }
     public string Uptime { get; set; }
     public DatabaseConfig DatabaseConfig { get; set; }
+    public bool EnableGracefulShutdown { get; set; }
+    public int ShutdownDelaySeconds { get; set; }
+    public string ShutdownMessageCommand { get; set; }
 }
