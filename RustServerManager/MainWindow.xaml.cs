@@ -1,13 +1,19 @@
 ﻿// MainWindow.xaml.cs - Updated for MaterialDesign 5.x theme handling
+using CommunityToolkit.Mvvm.ComponentModel;
 using MaterialDesignThemes.Wpf;
+using RustServerManager.Controls;
 using RustServerManager.Models;
 using RustServerManager.Utils;
 using RustServerManager.ViewModels;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Animation;
 
 namespace RustServerManager
 {
@@ -19,71 +25,37 @@ namespace RustServerManager
             //MainSnackbar.MessageQueue?.Enqueue(message);
         }
 
-        
 
+        public RustInstanceGridViewModel ViewModel { get; } = new();
         public MainWindow()
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
-        }
-
-        public async Task <List<string>> FindMySql(string path)
-        {
-          return await SafeEnumerateFiles.EnumerateFilesSafeAsync(path, "MySql.exe", SearchOption.AllDirectories);
+            this.DataContext = ViewModel;
         }
 
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             string dbconfigjson = File.ReadAllText("dbconfig.json");
             var dbconfig = JsonSerializer.Deserialize<DatabaseConfig>(dbconfigjson);
             MainWindowViewModel.dbconfig = dbconfig;
-            //var myssqlinstalled = await MySqlInstaller.DownloadAndLaunchMySqlInstallerAsync(Path.Combine(Path.GetTempPath(), "MySqlDownload"));
-            //if (NetworkCounterDetector.TryDetect(out string counter, out string ip))
-            //{
-            //    NetworkMonitorOverrides.Reset(Environment.MachineName);
-            //    NetworkMonitorOverrides.Set(Environment.MachineName, counter, ip);
-            //}
-            //await Dispatcher.InvokeAsync(async () => 
-            //{
-            //    List<string> mysqlpaths = new List<string>();
-            //    var drives = System.IO.DriveInfo.GetDrives();
-            //    if (drives.Length > 0)
-            //    {
-            //        foreach(var drive in drives)
-            //        {
-            //            if (drive.IsReady)
-            //            {
-            //                if (drive.DriveType == DriveType.Fixed)
-            //                {
-            //                    List<string> files = await Task.Run(() => FindMySql(drive.RootDirectory.FullName));
-            //                    if (files != null)
-            //                    {
-            //                        foreach (var file in files) {mysqlpaths.Add(file); }
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //    if (mysqlpaths.Count > 0)
-            //    {
-            //        { 
-            //            foreach (var file in mysqlpaths)
-            //            {
-            //                if (!File.Exists("MySqlInstalls.txt"))
-            //                {
-            //                    FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(file);
-            //                    string filedetails = $"{file},{fileVersionInfo}";
-            //                    await File.AppendAllTextAsync("MySqlInstalls.txt",filedetails);
-            //                }
-            //            } 
-            //        }
-            //    }
-            //    else
-            //    {
-            //        await File.AppendAllTextAsync("","Not Installed,Unknown");
-            //    }
-            //});
+            await Dispatcher.InvokeAsync(async () =>
+            {
+                var dialog = new ScanDialog(); // your UserControl
+                var result = await DialogHost.Show(dialog, "MainDialog") as DialogSession;
+            }, System.Windows.Threading.DispatcherPriority.Background);
+            await ViewModel.LoadInstances();
+            DialogHost.Close("MainDialog");
+
+            //Cuurent Selected
+            if (ViewModel.Instances.Any())
+                ViewModel.SelectedInstance = ViewModel.Instances.First();
+            ViewModel.EditCommand.NotifyCanExecuteChanged();
+            ViewModel.BackInstanceCommand.NotifyCanExecuteChanged();
+            ViewModel.NextInstanceCommand.NotifyCanExecuteChanged();
+            var rotateStoryboard = (Storyboard)FindResource("RotateBoltAnimation");
+            rotateStoryboard.Begin();
         }
     }
 }

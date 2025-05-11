@@ -24,6 +24,7 @@
     <Compile Remove="Unused\RconCommandInputControl.xaml.cs" />
     <Compile Remove="Unused\RustInstanceGrid.xaml.cs" />
     <Compile Remove="Unused\RustServerMonitorService.cs" />
+    <Compile Remove="Unused\RustServerOverviewPage.xaml.cs" />
     <Compile Remove="Unused\RustServerStatsViewModel.cs" />
     <Compile Remove="Unused\RustServerStatusControl.xaml.cs" />
     <Compile Remove="Unused\RustStatsCollector.cs" />
@@ -37,6 +38,7 @@
     <Compile Remove="ViewModels\ServerConfigViewModel.cs" />
     <Compile Remove="ViewModels\ServerStatsViewModel.cs" />
     <Compile Remove="Views\RconCommandInputControl.xaml.cs" />
+    <Compile Remove="Views\RustServerOverviewPage.xaml.cs" />
     <Compile Remove="Views\ServerConfigView.xaml.cs" />
   </ItemGroup>
 
@@ -55,6 +57,8 @@
     <None Remove="Assets\RustyWall.png" />
     <None Remove="dbconfig.json" />
     <None Remove="PlayerStats.sql" />
+    <None Remove="TableInstances.sql" />
+    <None Remove="TableRust_Log.sql" />
     <None Remove="Unused\RustInstanceGridViewModel.old" />
   </ItemGroup>
 
@@ -67,9 +71,11 @@
     <Page Remove="Unused\QuickCommandControl.xaml" />
     <Page Remove="Unused\RconCommandInputControl.xaml" />
     <Page Remove="Unused\RustInstanceGrid.xaml" />
+    <Page Remove="Unused\RustServerOverviewPage.xaml" />
     <Page Remove="Unused\RustServerStatusControl.xaml" />
     <Page Remove="Unused\ServerConfigView.xaml" />
     <Page Remove="Views\RconCommandInputControl.xaml" />
+    <Page Remove="Views\RustServerOverviewPage.xaml" />
     <Page Remove="Views\ServerConfigView.xaml" />
   </ItemGroup>
 
@@ -78,6 +84,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PlayerStats.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TableInstances.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TableRust_Log.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

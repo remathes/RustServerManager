@@ -23,49 +23,73 @@
             Color="#FF4500" />
         <Storyboard x:Key="RotateBoltAnimation" RepeatBehavior="Forever">
             <DoubleAnimation
-                Storyboard.TargetName="BoltTopLeft"
+                Storyboard.TargetName="BoltTopLeftLeftPanel"
                 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                 From="0"
                 To="360"
                 Duration="0:0:8" />
             <DoubleAnimation
-                Storyboard.TargetName="BoltTopRight"
+                Storyboard.TargetName="BoltTopRightLeftPanel"
                 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                 From="0"
                 To="360"
                 Duration="0:0:8" />
             <DoubleAnimation
-                Storyboard.TargetName="BoltBottomLeft"
+                Storyboard.TargetName="BoltBottomLeftLeftPanel"
                 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                 From="0"
                 To="360"
                 Duration="0:0:8" />
             <DoubleAnimation
-                Storyboard.TargetName="BoltBottomRight"
+                Storyboard.TargetName="BoltBottomRightLeftPanel"
                 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                 From="0"
                 To="360"
                 Duration="0:0:8" />
             <DoubleAnimation
-                Storyboard.TargetName="BoltTopLeft1"
+                Storyboard.TargetName="BoltTopLeftRightPanel"
                 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                 From="0"
                 To="360"
                 Duration="0:0:8" />
             <DoubleAnimation
-                Storyboard.TargetName="BoltTopRight1"
+                Storyboard.TargetName="BoltTopRightRightPanel"
                 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                 From="0"
                 To="360"
                 Duration="0:0:8" />
             <DoubleAnimation
-                Storyboard.TargetName="BoltBottomLeft1"
+                Storyboard.TargetName="BoltBottomLeftRightPanel"
                 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                 From="0"
                 To="360"
                 Duration="0:0:8" />
             <DoubleAnimation
-                Storyboard.TargetName="BoltBottomRight1"
+                Storyboard.TargetName="BoltBottomRightRightPanel"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                From="0"
+                To="360"
+                Duration="0:0:8" />
+            <DoubleAnimation
+                Storyboard.TargetName="BoltTopLeftTopPanel"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                From="0"
+                To="360"
+                Duration="0:0:8" />
+            <DoubleAnimation
+                Storyboard.TargetName="BoltTopRightTopPanel"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                From="0"
+                To="360"
+                Duration="0:0:8" />
+            <DoubleAnimation
+                Storyboard.TargetName="BoltBottomLeftTopPanel"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                From="0"
+                To="360"
+                Duration="0:0:8" />
+            <DoubleAnimation
+                Storyboard.TargetName="BoltBottomRightTopPanel"
                 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                 From="0"
                 To="360"
@@ -88,8 +112,39 @@
         <Style x:Key="LavaCardStyle" TargetType="materialDesign:Card">
             <Setter Property="Effect" Value="{StaticResource LavaGlowEffect}" />
         </Style>
+        <!--  Button Style  -->
         <Style
             x:Key="RustButtonStyle"
+            BasedOn="{StaticResource MaterialDesignFlatButton}"
+            TargetType="Button">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Offset="0" Color="#BF360C" />
+                        <GradientStop Offset="1" Color="#A33E12" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect
+                        BlurRadius="10"
+                        Opacity="0.6"
+                        ShadowDepth="2"
+                        Color="#99000000" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="#8B3A00" />
+            <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+        </Style>
+        <!--  Toggle Button Style  -->
+        <Style
+            x:Key="RustToggleButtonStyle"
             BasedOn="{StaticResource MaterialDesignSwitchToggleButton}"
             TargetType="ToggleButton">
             <Setter Property="Background">
@@ -124,7 +179,150 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
         <Grid
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="10"
+            Background="Transparent">
+            <!--  Outer glowing border  -->
+            <Border
+                Padding="5"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="Transparent"
+                CornerRadius="10"
+                Effect="{StaticResource LavaGlow}">
+
+                <!--  Inner rusted panel  -->
+                <Border Background="{StaticResource RustPlateBrush}" CornerRadius="8">
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Image
+                            x:Name="BoltTopLeftTopPanel"
+                            Width="36"
+                            Height="36"
+                            Margin="4"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="18" CenterY="18" />
+                            </Image.RenderTransform>
+                        </Image>
+
+                        <Image
+                            x:Name="BoltTopRightTopPanel"
+                            Width="36"
+                            Height="36"
+                            Margin="4"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="18" CenterY="18" />
+                            </Image.RenderTransform>
+                        </Image>
+
+                        <Image
+                            x:Name="BoltBottomLeftTopPanel"
+                            Width="36"
+                            Height="36"
+                            Margin="4"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="18" CenterY="18" />
+                            </Image.RenderTransform>
+                        </Image>
+
+                        <Image
+                            x:Name="BoltBottomRightTopPanel"
+                            Width="36"
+                            Height="36"
+                            Margin="4"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="18" CenterY="18" />
+                            </Image.RenderTransform>
+                        </Image>
+                        <materialDesign:Card
+                            x:Name="TopCard"
+                            Margin="40"
+                            materialDesign:ElevationAssist.Elevation="Dp3"
+                            materialDesign:UniformCornerRadius="10"
+                            Background="{StaticResource MaterialDesignDarkSeparatorBackground}"
+                            Opacity="0.8">
+                            <!--  🎛️ Center Toolbar  -->
+                            <StackPanel
+    Grid.Column="1"
+    Margin="0"
+    HorizontalAlignment="Center"
+    VerticalAlignment="Center"
+    Orientation="Horizontal">
+                                <Button
+        Margin="4"
+        Command="{Binding NewCommand}"
+        Content="{materialDesign:PackIcon Plus}"
+        Style="{StaticResource RustButtonStyle}" />
+                                <Button
+        Margin="4"
+        Command="{Binding StartCommand}"
+        Content="{materialDesign:PackIcon Play}"
+        Style="{StaticResource RustButtonStyle}" />
+                                <Button
+        Margin="4"
+        Command="{Binding StopCommand}"
+        Content="{materialDesign:PackIcon Stop}"
+        Style="{StaticResource RustButtonStyle}" />
+                                <Button
+        Margin="4"
+        Content="{materialDesign:PackIcon Restart}"
+        Style="{StaticResource RustButtonStyle}" />
+                                <Button
+        Margin="4"
+        Command="{Binding EditCommand}"
+        Content="{materialDesign:PackIcon Pencil}"
+        Style="{StaticResource RustButtonStyle}" />
+                                <Button
+        Margin="4"
+        Command="{Binding DeleteCommand}"
+        Content="{materialDesign:PackIcon Trash}"
+        Style="{StaticResource RustButtonStyle}" />
+                                <Button
+        Margin="4"
+        Command="{Binding ConnectToConsoleCommand}"
+        Content="{materialDesign:PackIcon Kind=ConsoleNetwork}"
+        Style="{StaticResource RustButtonStyle}"
+        ToolTip="Connect to Console" />
+                                <Button
+        Margin="4"
+        Command="{Binding BackInstanceCommand}"
+        Content="{materialDesign:PackIcon ArrowBack}"
+        Style="{StaticResource RustButtonStyle}" />
+                                <Button
+        Margin="4"
+        Command="{Binding NextInstanceCommand}"
+        Content="{materialDesign:PackIcon ArrowForward}"
+        Style="{StaticResource RustButtonStyle}" />
+                            </StackPanel>
+                        </materialDesign:Card>
+                    </Grid>
+                </Border>
+            </Border>
+        </Grid>
+        <Grid
+            Grid.Row="1"
             Grid.Column="1"
             Margin="10"
             Background="Transparent">
@@ -141,7 +339,7 @@
                 <Border Background="{StaticResource RustPlateBrush}" CornerRadius="8">
                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Image
-                            x:Name="BoltTopLeft1"
+                            x:Name="BoltTopLeftRightPanel"
                             Width="36"
                             Height="36"
                             Margin="4"
@@ -155,7 +353,7 @@
                         </Image>
 
                         <Image
-                            x:Name="BoltTopRight1"
+                            x:Name="BoltTopRightRightPanel"
                             Width="36"
                             Height="36"
                             Margin="4"
@@ -169,7 +367,7 @@
                         </Image>
 
                         <Image
-                            x:Name="BoltBottomLeft1"
+                            x:Name="BoltBottomLeftRightPanel"
                             Width="36"
                             Height="36"
                             Margin="4"
@@ -183,7 +381,7 @@
                         </Image>
 
                         <Image
-                            x:Name="BoltBottomRight1"
+                            x:Name="BoltBottomRightRightPanel"
                             Width="36"
                             Height="36"
                             Margin="4"
@@ -589,6 +787,7 @@
         </Grid>
         <!--  Gauges Area  -->
         <Grid
+            Grid.Row="1"
             Grid.Column="0"
             Margin="10"
             Background="Transparent">
@@ -605,7 +804,7 @@
                 <Border Background="{StaticResource RustPlateBrush}" CornerRadius="8">
                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Image
-                            x:Name="BoltTopLeft"
+                            x:Name="BoltTopLeftLeftPanel"
                             Width="36"
                             Height="36"
                             Margin="4"
@@ -619,7 +818,7 @@
                         </Image>
 
                         <Image
-                            x:Name="BoltTopRight"
+                            x:Name="BoltTopRightLeftPanel"
                             Width="36"
                             Height="36"
                             Margin="4"
@@ -633,7 +832,7 @@
                         </Image>
 
                         <Image
-                            x:Name="BoltBottomLeft"
+                            x:Name="BoltBottomLeftLeftPanel"
                             Width="36"
                             Height="36"
                             Margin="4"
@@ -647,7 +846,7 @@
                         </Image>
 
                         <Image
-                            x:Name="BoltBottomRight"
+                            x:Name="BoltBottomRightLeftPanel"
                             Width="36"
                             Height="36"
                             Margin="4"
@@ -705,7 +904,7 @@
                                                     Width="48"
                                                     Margin="0,0,6,0"
                                                     IsChecked="{Binding AutoStart, Mode=TwoWay}"
-                                                    Style="{StaticResource RustButtonStyle}" />
+                                                    Style="{StaticResource RustToggleButtonStyle}" />
                                                 <TextBlock
                                                     VerticalAlignment="Center"
                                                     FontSize="12"
@@ -723,7 +922,7 @@
                                                     Width="48"
                                                     Margin="0,0,6,0"
                                                     IsChecked="{Binding AutoUpdate, Mode=TwoWay}"
-                                                    Style="{StaticResource RustButtonStyle}" />
+                                                    Style="{StaticResource RustToggleButtonStyle}" />
                                                 <TextBlock
                                                     VerticalAlignment="Center"
                                                     FontSize="12"
@@ -1006,5 +1205,12 @@
                 </Border>
             </Border>
         </Grid>
+        <!--  Card around DataGrid  -->
+        <ContentControl
+            Grid.Row="1"
+            Padding="5"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Content="{Binding SelectedPage}" />
     </Grid>
 </UserControl>

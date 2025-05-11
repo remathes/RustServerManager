@@ -4,6 +4,7 @@ using RustServerManager.ViewModels;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 
 
 namespace RustServerManager.Views
@@ -13,8 +14,7 @@ namespace RustServerManager.Views
     /// </summary>
     public partial class RustServerGridView : UserControl
     {
-        private readonly PaletteHelper _paletteHelper = new();
-        public RustInstanceGridViewModel ViewModel { get; } = new();
+        public RustInstanceGridItemViewModel ViewModel { get; }
         private Process _rustProcess;
         public RustServerGridView()
         {
@@ -26,22 +26,10 @@ namespace RustServerManager.Views
             }
         }
 
-        private async void RustServerGridView_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void RustServerGridView_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            await Dispatcher.InvokeAsync(async () =>
-            {
-                var dialog = new ScanDialog(); // your UserControl
-                var result = await DialogHost.Show(dialog, "MainDialog") as DialogSession;
-            }, System.Windows.Threading.DispatcherPriority.Background);
-            await ViewModel.LoadInstances();
-            DialogHost.Close("MainDialog");
-            
-            //Cuurent Selected
-            if (ViewModel.Instances.Any())
-                ViewModel.SelectedInstance = ViewModel.Instances.First();
-            ViewModel.EditCommand.NotifyCanExecuteChanged();
-            ViewModel.BackInstanceCommand.NotifyCanExecuteChanged();
-            ViewModel.NextInstanceCommand.NotifyCanExecuteChanged();
+            var rotateStoryboard = (Storyboard)FindResource("RotateBoltAnimation");
+            rotateStoryboard.Begin();
         }
     }
 }

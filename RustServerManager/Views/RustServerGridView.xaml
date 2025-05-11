@@ -12,6 +12,74 @@
     Background="Transparent"
     mc:Ignorable="d">
     <UserControl.Resources>
+        <!--  Background texture  -->
+        <ImageBrush
+            x:Key="RustPlateBrush"
+            ImageSource="pack://application:,,,/RustServerManager;component/Assets/RustSilverWall2.png"
+            Stretch="Fill" />
+        <!--  Lava glow effect  -->
+        <DropShadowEffect
+            x:Key="LavaGlow"
+            BlurRadius="100"
+            Opacity="0.8"
+            ShadowDepth="0"
+            Color="#FF4500" />
+        <Storyboard x:Key="RotateBoltAnimation" RepeatBehavior="Forever">
+            <DoubleAnimation
+                Storyboard.TargetName="BoltTopLeftLeftPanel"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                From="0"
+                To="360"
+                Duration="0:0:8" />
+            <DoubleAnimation
+                Storyboard.TargetName="BoltTopRightLeftPanel"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                From="0"
+                To="360"
+                Duration="0:0:8" />
+            <DoubleAnimation
+                Storyboard.TargetName="BoltBottomLeftLeftPanel"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                From="0"
+                To="360"
+                Duration="0:0:8" />
+            <DoubleAnimation
+                Storyboard.TargetName="BoltBottomRightLeftPanel"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                From="0"
+                To="360"
+                Duration="0:0:8" />
+            <DoubleAnimation
+                Storyboard.TargetName="BoltTopLeftRightPanel"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                From="0"
+                To="360"
+                Duration="0:0:8" />
+            <DoubleAnimation
+                Storyboard.TargetName="BoltTopRightRightPanel"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                From="0"
+                To="360"
+                Duration="0:0:8" />
+            <DoubleAnimation
+                Storyboard.TargetName="BoltBottomLeftRightPanel"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                From="0"
+                To="360"
+                Duration="0:0:8" />
+            <DoubleAnimation
+                Storyboard.TargetName="BoltBottomRightRightPanel"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                From="0"
+                To="360"
+                Duration="0:0:8" />
+        </Storyboard>
+        <converters:BooleanToBrushConverter x:Key="BooleanToBrushConverter" />
+        <converters:BooleanToStatusTextConverter
+            x:Key="RustRunningStatusText"
+            ConnectedText="Online"
+            DisconnectedText="Offline" />
+        <converters:BannerImageConverter x:Key="BannerImageConverter" />
         <converters:RustProcessStatusBrushConverter x:Key="RustStatusBrushConverter" />
         <DropShadowEffect
             x:Key="LavaGlowEffect"
@@ -23,10 +91,12 @@
         <Style x:Key="LavaCardStyle" TargetType="materialDesign:Card">
             <Setter Property="Effect" Value="{StaticResource LavaGlowEffect}" />
         </Style>
+        
+        <!--  Toggle Button Style  -->
         <Style
-            x:Key="RustButtonStyle"
-            BasedOn="{StaticResource MaterialDesignFlatButton}"
-            TargetType="Button">
+            x:Key="RustToggleButtonStyle"
+            BasedOn="{StaticResource MaterialDesignSwitchToggleButton}"
+            TargetType="ToggleButton">
             <Setter Property="Background">
                 <Setter.Value>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -53,218 +123,897 @@
             <Setter Property="OverridesDefaultStyle" Value="True" />
         </Style>
     </UserControl.Resources>
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <!--  fill remaining  -->
-        </Grid.RowDefinitions>
 
-        <!--  Toolbar  -->
-        <materialDesign:Card
-            x:Name="ForgeCard"
-            Grid.Row="0"
-            Height="120"
-            Margin="15 10 15 10"
-            HorizontalAlignment="Stretch" 
-            VerticalAlignment="Stretch"
-            materialDesign:ElevationAssist.Elevation="Dp2"
-            materialDesign:UniformCornerRadius="10"
-            Style="{StaticResource LavaCardStyle}">
-            <materialDesign:Card.Background>
-                <ImageBrush ImageSource="pack://application:,,,/RustServerManager;component/Assets/RustSilverWall2.png" Stretch="UniformToFill" />
-            </materialDesign:Card.Background>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <!--  🔩 Top Left  -->
-                <Image
-                    Grid.Column="0"
-                    Width="36"
-                    Height="36"
-                    Margin="2"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    RenderOptions.BitmapScalingMode="HighQuality"
-                    RenderTransformOrigin="0.5,0.5"
-                    SnapsToDevicePixels="True"
-                    Source="/Assets/bolt.png">
-                    <Image.RenderTransform>
-                        <RotateTransform />
-                    </Image.RenderTransform>
-                    <Image.Triggers>
-                        <EventTrigger RoutedEvent="Image.Loaded">
-                            <BeginStoryboard>
-                                <Storyboard RepeatBehavior="Forever">
-                                    <DoubleAnimation
-                                        Storyboard.TargetProperty="RenderTransform.Angle"
-                                        From="0"
-                                        To="360"
-                                        Duration="0:0:20" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </Image.Triggers>
-                </Image>
-                <!--  🔩 Top Right  -->
-                <Image
-                    Grid.Column="2"
-                    Width="36"
-                    Height="36"
-                    Margin="2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    RenderOptions.BitmapScalingMode="HighQuality"
-                    RenderTransformOrigin="0.5,0.5"
-                    SnapsToDevicePixels="True"
-                    Source="/Assets/bolt.png">
-                    <Image.RenderTransform>
-                        <RotateTransform />
-                    </Image.RenderTransform>
-                    <Image.Triggers>
-                        <EventTrigger RoutedEvent="Image.Loaded">
-                            <BeginStoryboard>
-                                <Storyboard RepeatBehavior="Forever">
-                                    <DoubleAnimation
-                                        Storyboard.TargetProperty="RenderTransform.Angle"
-                                        From="360"
-                                        To="0"
-                                        Duration="0:0:22" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </Image.Triggers>
-                </Image>
-                <!--  🔩 Bottom Left  -->
-                <Image
-                    Grid.Column="0"
-                    Width="36"
-                    Height="36"
-                    Margin="2"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Bottom"
-                    RenderOptions.BitmapScalingMode="HighQuality"
-                    RenderTransformOrigin="0.5,0.5"
-                    SnapsToDevicePixels="True"
-                    Source="/Assets/bolt.png">
-                    <Image.RenderTransform>
-                        <RotateTransform />
-                    </Image.RenderTransform>
-                    <Image.Triggers>
-                        <EventTrigger RoutedEvent="Image.Loaded">
-                            <BeginStoryboard>
-                                <Storyboard RepeatBehavior="Forever">
-                                    <DoubleAnimation
-                                        Storyboard.TargetProperty="RenderTransform.Angle"
-                                        From="0"
-                                        To="360"
-                                        Duration="0:0:21" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </Image.Triggers>
-                </Image>
-                <!--  🔩 Bottom Right  -->
-                <Image
-                    Grid.Column="2"
-                    Width="36"
-                    Height="36"
-                    Margin="2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    RenderOptions.BitmapScalingMode="HighQuality"
-                    RenderTransformOrigin="0.5,0.5"
-                    SnapsToDevicePixels="True"
-                    Source="/Assets/bolt.png">
-                    <Image.RenderTransform>
-                        <RotateTransform />
-                    </Image.RenderTransform>
-                    <Image.Triggers>
-                        <EventTrigger RoutedEvent="Image.Loaded">
-                            <BeginStoryboard>
-                                <Storyboard RepeatBehavior="Forever">
-                                    <DoubleAnimation
-                                        Storyboard.TargetProperty="RenderTransform.Angle"
-                                        From="360"
-                                        To="0"
-                                        Duration="0:0:23" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </Image.Triggers>
-                </Image>
-                <materialDesign:Card
-                    Grid.Column="1"
-                    Margin="0,20,0,20"
-                    Padding="10"
-                    materialDesign:ElevationAssist.Elevation="Dp3"
-                    materialDesign:UniformCornerRadius="10"
-                    Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
-                    <!--  🎛️ Center Toolbar  -->
-                    <StackPanel
-                        Grid.Column="1"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal">
-                        <Button
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid
+            Grid.Column="1"
+            Margin="10"
+            Background="Transparent">
+            <!--  Outer glowing border  -->
+            <Border
+                Padding="5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Background="Transparent"
+                CornerRadius="10"
+                Effect="{StaticResource LavaGlow}">
+
+                <!--  Inner rusted panel  -->
+                <Border Background="{StaticResource RustPlateBrush}" CornerRadius="8">
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Image
+                            x:Name="BoltTopLeftRightPanel"
+                            Width="36"
+                            Height="36"
                             Margin="4"
-                            Command="{Binding NewCommand}"
-                            Content="{materialDesign:PackIcon Plus}"
-                            Style="{StaticResource RustButtonStyle}" />
-                        <Button
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="18" CenterY="18" />
+                            </Image.RenderTransform>
+                        </Image>
+
+                        <Image
+                            x:Name="BoltTopRightRightPanel"
+                            Width="36"
+                            Height="36"
                             Margin="4"
-                            Command="{Binding StartCommand}"
-                            Content="{materialDesign:PackIcon Play}"
-                            Style="{StaticResource RustButtonStyle}" />
-                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="18" CenterY="18" />
+                            </Image.RenderTransform>
+                        </Image>
+
+                        <Image
+                            x:Name="BoltBottomLeftRightPanel"
+                            Width="36"
+                            Height="36"
                             Margin="4"
-                            Command="{Binding StopCommand}"
-                            Content="{materialDesign:PackIcon Stop}"
-                            Style="{StaticResource RustButtonStyle}" />
-                        <Button
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="18" CenterY="18" />
+                            </Image.RenderTransform>
+                        </Image>
+
+                        <Image
+                            x:Name="BoltBottomRightRightPanel"
+                            Width="36"
+                            Height="36"
                             Margin="4"
-                            Content="{materialDesign:PackIcon Restart}"
-                            Style="{StaticResource RustButtonStyle}" />
-                        <Button
-                            Margin="4"
-                            Command="{Binding EditCommand}"
-                            Content="{materialDesign:PackIcon Pencil}"
-                            Style="{StaticResource RustButtonStyle}" />
-                        <Button
-                            Margin="4"
-                            Command="{Binding DeleteCommand}"
-                            Content="{materialDesign:PackIcon Trash}"
-                            Style="{StaticResource RustButtonStyle}" />
-                        <Button
-                            Margin="4"
-                            Command="{Binding ConnectToConsoleCommand}"
-                            Content="{materialDesign:PackIcon Kind=ConsoleNetwork}"
-                            Style="{StaticResource RustButtonStyle}"
-                            ToolTip="Connect to Console" />
-                        <Button
-                            Margin="4"
-                            Command="{Binding BackInstanceCommand}"
-                            Content="{materialDesign:PackIcon ArrowBack}"
-                            Style="{StaticResource RustButtonStyle}" />
-                        <Button
-                            Margin="4"
-                            Command="{Binding NextInstanceCommand}"
-                            Content="{materialDesign:PackIcon ArrowForward}"
-                            Style="{StaticResource RustButtonStyle}" />
-                    </StackPanel>
-                </materialDesign:Card>
-            </Grid>
-        </materialDesign:Card>
-        <!--  Card around DataGrid  -->
-        <ContentControl
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="18" CenterY="18" />
+                            </Image.RenderTransform>
+                        </Image>
+                        <materialDesign:Card
+                            x:Name="RightCard"
+                            Margin="40"
+                            materialDesign:ElevationAssist.Elevation="Dp3"
+                            materialDesign:UniformCornerRadius="10"
+                            Background="{StaticResource MaterialDesignDarkSeparatorBackground}"
+                            Opacity="0.8">
+                            <Grid
+                                Margin="10"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <StackPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Host Name:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="{Binding ServerHostname}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Last Wiped" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="{Binding LastWiped, StringFormat=MM/dd/yyyy}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Server IP:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="{Binding ServerIp}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Server Port:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="{Binding ServerPort}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="RCON IP:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="{Binding RconIp}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="RCON Port:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="{Binding RconPort}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Level:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="{Binding Level}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Map Name:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="{Binding MapName}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="World Size:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="{Binding WorldSize}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="4"
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Seed:" />
+                                    <TextBlock
+                                        Margin="4"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="{Binding Seed}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="5"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Max Players:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="{Binding MaxPlayers}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="5"
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Uptime:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="{Binding Uptime}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="6"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Placeholder:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="6"
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Placeholder:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="7"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Placeholder:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="7"
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Placeholder:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="8"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Placeholder:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="8"
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Placeholder:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="9"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Placeholder:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="9"
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                        Text="Placeholder:" />
+                                    <TextBlock
+                                        Margin="5"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Style="{StaticResource MaterialDesignTextBlock}"
+                                        Text="" />
+                                </StackPanel>
+                            </Grid>
+                        </materialDesign:Card>
+                    </Grid>
+                </Border>
+            </Border>
+        </Grid>
+        <!--  Gauges Area  -->
+        <Grid
             Grid.Row="1"
-            Padding="5"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            Content="{Binding SelectedPage}" />
+            Grid.Column="0"
+            Margin="10"
+            Background="Transparent">
+            <!--  Outer glowing border  -->
+            <Border
+                Padding="5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Background="Transparent"
+                CornerRadius="10"
+                Effect="{StaticResource LavaGlow}">
+
+                <!--  Inner rusted panel  -->
+                <Border Background="{StaticResource RustPlateBrush}" CornerRadius="8">
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Image
+                            x:Name="BoltTopLeftLeftPanel"
+                            Width="36"
+                            Height="36"
+                            Margin="4"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="18" CenterY="18" />
+                            </Image.RenderTransform>
+                        </Image>
+
+                        <Image
+                            x:Name="BoltTopRightLeftPanel"
+                            Width="36"
+                            Height="36"
+                            Margin="4"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="18" CenterY="18" />
+                            </Image.RenderTransform>
+                        </Image>
+
+                        <Image
+                            x:Name="BoltBottomLeftLeftPanel"
+                            Width="36"
+                            Height="36"
+                            Margin="4"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="18" CenterY="18" />
+                            </Image.RenderTransform>
+                        </Image>
+
+                        <Image
+                            x:Name="BoltBottomRightLeftPanel"
+                            Width="36"
+                            Height="36"
+                            Margin="4"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/RustServerManager;component/Assets/bolt.png">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="18" CenterY="18" />
+                            </Image.RenderTransform>
+                        </Image>
+                        <materialDesign:Card
+                            x:Name="LefCard"
+                            Height="{Binding ActualHeight, ElementName=RightCard}"
+                            Margin="40"
+                            materialDesign:ElevationAssist.Elevation="Dp3"
+                            materialDesign:UniformCornerRadius="10"
+                            Background="{StaticResource MaterialDesignDarkSeparatorBackground}"
+                            Opacity="0.8">
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel>
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Border
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Margin="10"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            ClipToBounds="True"
+                                            CornerRadius="10">
+                                            <Image
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch"
+                                                Source="{Binding BannerImagePath, Converter={StaticResource BannerImageConverter}}"
+                                                Stretch="Uniform" />
+                                        </Border>
+                                        <StackPanel
+                                            Grid.Row="1"
+                                            Margin="0,10,0,10"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Top"
+                                            Orientation="Horizontal">
+
+                                            <!--  🔄 Auto Start  -->
+                                            <StackPanel
+                                                Margin="0,0,30,0"
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <ToggleButton
+                                                    x:Name="AutoStart"
+                                                    Width="48"
+                                                    Margin="0,0,6,0"
+                                                    IsChecked="{Binding AutoStart, Mode=TwoWay}"
+                                                    Style="{StaticResource RustToggleButtonStyle}" />
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    FontSize="12"
+                                                    Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                    Text="Auto Start" />
+                                            </StackPanel>
+
+                                            <!--  🔁 Auto Update  -->
+                                            <StackPanel
+                                                Margin="0,0,30,0"
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <ToggleButton
+                                                    x:Name="AutoUpdate"
+                                                    Width="48"
+                                                    Margin="0,0,6,0"
+                                                    IsChecked="{Binding AutoUpdate, Mode=TwoWay}"
+                                                    Style="{StaticResource RustToggleButtonStyle}" />
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    FontSize="12"
+                                                    Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                    Text="Auto Update" />
+                                            </StackPanel>
+
+                                            <!--  🟢 Online Status  -->
+                                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                <materialDesign:PackIcon
+                                                    x:Name="RustStatusIcon"
+                                                    Width="24"
+                                                    Height="24"
+                                                    Margin="0,0,6,0"
+                                                    Foreground="{Binding IsRunning, Converter={StaticResource BooleanToBrushConverter}}"
+                                                    Kind="NetworkOutline">
+                                                    <materialDesign:PackIcon.RenderTransform>
+                                                        <ScaleTransform />
+                                                    </materialDesign:PackIcon.RenderTransform>
+                                                    <materialDesign:PackIcon.Style>
+                                                        <Style TargetType="materialDesign:PackIcon">
+                                                            <Setter Property="Foreground" Value="Gray" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                                                    <Setter Property="Foreground" Value="LimeGreen" />
+                                                                    <DataTrigger.EnterActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard RepeatBehavior="Forever">
+                                                                                <DoubleAnimation
+                                                                                    AutoReverse="True"
+                                                                                    Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                                    From="1.0"
+                                                                                    To="1.2"
+                                                                                    Duration="0:0:0.5" />
+                                                                                <DoubleAnimation
+                                                                                    AutoReverse="True"
+                                                                                    Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                                    From="1.0"
+                                                                                    To="1.2"
+                                                                                    Duration="0:0:0.5" />
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </DataTrigger.EnterActions>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </materialDesign:PackIcon.Style>
+                                                </materialDesign:PackIcon>
+
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    FontSize="12"
+                                                    Foreground="{Binding IsRunning, Converter={StaticResource BooleanToBrushConverter}}"
+                                                    Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                    Text="{Binding IsRunning, Converter={StaticResource RustRunningStatusText}}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                                <StackPanel
+                                    Margin="5"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top"
+                                    Orientation="Horizontal">
+                                    <StackPanel
+                                        MinWidth="200"
+                                        MinHeight="200"
+                                        Margin="5"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <!--  Chart column  -->
+                                            <Grid Grid.Column="0">
+                                                <!--  Hide built-in legend  -->
+                                                <lvc:PieChart
+                                                    MinWidth="200"
+                                                    MinHeight="200"
+                                                    Background="Transparent"
+                                                    InitialRotation="135"
+                                                    LegendPosition="Hidden"
+                                                    MaxAngle="270"
+                                                    Series="{Binding CpuGaugeSeries}"
+                                                    TooltipPosition="Hidden" />
+
+                                                <!--  Centered label  -->
+                                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="{Binding CpuPercentText}" />
+                                                    <TextBlock
+                                                        Margin="0,2,0,0"
+                                                        HorizontalAlignment="Center"
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="CPU" />
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <!--  Manual legend  -->
+                                            <StackPanel
+                                                Grid.Column="1"
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Orientation="Vertical">
+                                                <StackPanel Margin="0,7,0,7" Orientation="Horizontal">
+                                                    <Ellipse
+                                                        Width="12"
+                                                        Height="12"
+                                                        Margin="0,0,4,0"
+                                                        Fill="LimeGreen" />
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="Low" />
+                                                </StackPanel>
+                                                <StackPanel Margin="0,7,0,7" Orientation="Horizontal">
+                                                    <Ellipse
+                                                        Width="12"
+                                                        Height="12"
+                                                        Margin="0,0,4,0"
+                                                        Fill="Gold" />
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="Medium" />
+                                                </StackPanel>
+                                                <StackPanel Margin="0,7,0,7" Orientation="Horizontal">
+                                                    <Ellipse
+                                                        Width="12"
+                                                        Height="12"
+                                                        Margin="0,0,4,0"
+                                                        Fill="Orange" />
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="High" />
+                                                </StackPanel>
+                                                <StackPanel Margin="0,7,0,7" Orientation="Horizontal">
+                                                    <Ellipse
+                                                        Width="12"
+                                                        Height="12"
+                                                        Margin="0,0,4,0"
+                                                        Fill="Crimson" />
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="Max" />
+                                                </StackPanel>
+                                                <StackPanel Margin="0,7,0,7" Orientation="Horizontal">
+                                                    <Ellipse
+                                                        Width="12"
+                                                        Height="12"
+                                                        Margin="0,0,4,0"
+                                                        Fill="LightGray" />
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="Na" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+
+                                    <StackPanel
+                                        MinWidth="200"
+                                        MinHeight="200"
+                                        Margin="5"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <!--  Chart column  -->
+                                            <Grid Grid.Column="0">
+                                                <!--  Hide built-in legend  -->
+                                                <lvc:PieChart
+                                                    MinWidth="200"
+                                                    MinHeight="200"
+                                                    Background="Transparent"
+                                                    InitialRotation="135"
+                                                    LegendPosition="Hidden"
+                                                    MaxAngle="270"
+                                                    Series="{Binding RamGaugeSeries}"
+                                                    TooltipPosition="Hidden" />
+
+                                                <!--  Centered label  -->
+                                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="{Binding RamDisplayText}" />
+                                                    <TextBlock
+                                                        Margin="0,2,0,0"
+                                                        HorizontalAlignment="Center"
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="RAM" />
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <!--  Manual legend  -->
+                                            <StackPanel
+                                                Grid.Column="1"
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Orientation="Vertical">
+                                                <StackPanel Margin="0,7,0,7" Orientation="Horizontal">
+                                                    <Ellipse
+                                                        Width="12"
+                                                        Height="12"
+                                                        Margin="0,0,4,0"
+                                                        Fill="LimeGreen" />
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="Low" />
+                                                </StackPanel>
+                                                <StackPanel Margin="0,7,0,7" Orientation="Horizontal">
+                                                    <Ellipse
+                                                        Width="12"
+                                                        Height="12"
+                                                        Margin="0,0,4,0"
+                                                        Fill="Gold" />
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="Medium" />
+                                                </StackPanel>
+                                                <StackPanel Margin="0,7,0,7" Orientation="Horizontal">
+                                                    <Ellipse
+                                                        Width="12"
+                                                        Height="12"
+                                                        Margin="0,0,4,0"
+                                                        Fill="Orange" />
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="High" />
+                                                </StackPanel>
+                                                <StackPanel Margin="0,7,0,7" Orientation="Horizontal">
+                                                    <Ellipse
+                                                        Width="12"
+                                                        Height="12"
+                                                        Margin="0,0,4,0"
+                                                        Fill="Crimson" />
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="Max" />
+                                                </StackPanel>
+                                                <StackPanel Margin="0,7,0,7" Orientation="Horizontal">
+                                                    <Ellipse
+                                                        Width="12"
+                                                        Height="12"
+                                                        Margin="0,0,4,0"
+                                                        Fill="LightGray" />
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Style="{StaticResource MaterialDesignButtonTextBlock}"
+                                                        Text="Na" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </materialDesign:Card>
+                    </Grid>
+                </Border>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

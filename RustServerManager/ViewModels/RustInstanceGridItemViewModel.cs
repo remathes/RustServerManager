@@ -102,16 +102,6 @@ namespace RustServerManager.ViewModels
         public string RamUsedDisplayText => $"{RamUsedGb:F1} GB";
         public string RamTotalDisplayText => $"{TotalSystemRamGb:F1} GB";
 
-        private static SKColor GetGaugeColor(double percent)
-        {
-            if (percent <= 50)
-                return SKColors.LimeGreen;
-            else if (percent <= 75)
-                return SKColors.Yellow;
-            else
-                return SKColors.Crimson;
-        }
-
         // Gauge Updater
         private void UpdateGauge(ObservableCollection<PieSeries<ObservableValue>> gauge, double percent)
         {
@@ -182,50 +172,6 @@ namespace RustServerManager.ViewModels
                 if (gauge[4].Values.FirstOrDefault() is ObservableValue r)
                     r.Value = remaining;
             }
-            //percent = Math.Clamp(percent, 0.01, 100.0);
-            //double remaining = 100 - percent;
-
-            //if (gauge.Count == 0)
-            //{
-            //    gauge.Add(new PieSeries<ObservableValue>
-            //    {
-            //        Values = new ObservableCollection<ObservableValue> { new ObservableValue(percent) },
-            //        InnerRadius = 60,
-            //        MaxRadialColumnWidth = 50,
-            //        Stroke = null,
-            //        Fill = new LinearGradientPaint(
-            //            new[]
-            //            {
-            //        new SKColor(0, 200, 0),     // green
-            //        new SKColor(255, 215, 0),   // yellow
-            //        new SKColor(220, 20, 60)    // red
-            //            },
-            //            new SKPoint(0, 0),
-            //            new SKPoint(1, 1)
-            //        ),
-            //        IsHoverable = false,
-            //        DataLabelsPaint = null
-            //    });
-
-            //    gauge.Add(new PieSeries<ObservableValue>
-            //    {
-            //        Values = new ObservableCollection<ObservableValue> { new ObservableValue(remaining) },
-            //        InnerRadius = 60,
-            //        MaxRadialColumnWidth = 50,
-            //        Stroke = null,
-            //        Fill = new SolidColorPaint(new SKColor(230, 230, 230)),
-            //        IsHoverable = false,
-            //        DataLabelsPaint = null
-            //    });
-            //}
-            //else
-            //{
-            //    var usedValue = gauge[0].Values.OfType<ObservableValue>().FirstOrDefault();
-            //    var freeValue = gauge[1].Values.OfType<ObservableValue>().FirstOrDefault();
-
-            //    if (usedValue != null) usedValue.Value = percent;
-            //    if (freeValue != null) freeValue.Value = 100 - percent;
-            //}
         }
 
         public static double GetTotalPhysicalMemoryGb()
@@ -331,12 +277,12 @@ namespace RustServerManager.ViewModels
 
         private readonly Timer _monitorTimer;
         public RustServerInstance Instance { get; }
-
         private readonly ObservableCollection<UserControl> _pages;
         private int _currentPageIndex;
 
         [ObservableProperty]
         private UserControl currentPage;
+
 
         public IRelayCommand BackCommand { get; }
         public IRelayCommand NextCommand { get; }
@@ -422,7 +368,7 @@ namespace RustServerManager.ViewModels
         }
         private IEnumerable<UserControl> LoadPages()
         {
-            yield return new RustServerOverviewPage { DataContext = this };
+            yield return new RustServerGridView { DataContext = this };
         }
 
         public string BannerImagePath => Instance.BannerImagePath;
